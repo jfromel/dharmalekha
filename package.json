@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "verify": "node scripts/verify-citations.mjs",
+    "review": "node scripts/review-quote.mjs",
     "build:unverified": "astro build"
   },
   "dependencies": {
