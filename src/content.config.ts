@@ -58,8 +58,19 @@ const writings = defineCollection({
      * piece against its sources; `reviewer` is who. The build refuses to ship
      * a model-assisted piece without both.
      */
-    reviewed: z.coerce.date().optional(),
-    reviewer: z.string().optional(),
+    // A blank YAML value parses as null. Left raw, `z.coerce.date()` would
+    // turn null into 1970-01-01 — a valid-looking date for a review that
+    // never happened. Collapse null and empty string to `undefined` so a
+    // missing sign-off is genuinely missing, and the refinement below refuses
+    // it by name instead of coercing a false claim into the build.
+    reviewed: z.preprocess(
+      (v) => (v === null || v === '' ? undefined : v),
+      z.coerce.date().optional(),
+    ),
+    reviewer: z.preprocess(
+      (v) => (v === null || v === '' ? undefined : v),
+      z.string().min(1).optional(),
+    ),
 
     draft: z.boolean().default(false),
   })
