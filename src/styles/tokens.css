@@ -1,0 +1,14 @@
+:root {
+  /* ola leaf rubbing — ground, ink, and the brass of a stylus-cut rule */
+  --leaf: #e6dcc3;
+  --leaf-deep: #d9cdae;
+  --ink: #2b2118;
+  --ink-soft: #5c4f3d;
+  --ink-faint: #9a8c72;
+  --brass: #8a6a2f;
+
+  --rail-gap: 1.25rem;
+
+  --font-body: 'Spectral', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}

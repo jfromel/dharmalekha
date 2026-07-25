@@ -1,0 +1,30 @@
+---
+interface Props {
+  source?: string;
+  speaker?: string;
+}
+const { source, speaker } = Astro.props;
+const attribution = source ?? speaker;
+---
+
+<figure class="commentary">
+  <div class="body"><slot /></div>
+  {attribution && <figcaption>{attribution}</figcaption>}
+</figure>
+
+<style>
+  .commentary {
+    margin: 2rem 0;
+    padding-left: var(--rail-gap);
+    border-left: 1px solid var(--ink-soft);
+  }
+  .body {
+    color: var(--ink);
+  }
+  figcaption {
+    margin-top: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+  }
+</style>

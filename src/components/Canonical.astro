@@ -1,0 +1,54 @@
+---
+interface Props {
+  ref: string;
+  translator: string;
+  licence?: string;
+  url?: string;
+}
+const { ref, translator, licence, url } = Astro.props;
+
+if (!ref) throw new Error('<Canonical> requires a ref (a SuttaCentral uid).');
+if (!translator) throw new Error(`<Canonical ref="${ref}"> requires a translator.`);
+
+const href = url ?? `https://suttacentral.net/${ref}`;
+---
+
+<figure class="canonical">
+  <div class="body"><slot /></div>
+  <figcaption>
+    <a href={href} rel="noopener">{ref}</a>
+    <span class="sep">·</span>
+    <span>trans. {translator}</span>
+    {licence && <><span class="sep">·</span><span>{licence}</span></>}
+  </figcaption>
+</figure>
+
+<style>
+  .canonical {
+    margin: 2rem 0;
+    padding-left: var(--rail-gap);
+    border-left: 3px solid var(--brass);
+  }
+  .body {
+    color: var(--ink);
+  }
+  figcaption {
+    margin-top: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-soft);
+  }
+  figcaption a {
+    color: var(--brass);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+  figcaption a:hover {
+    border-bottom-color: var(--brass);
+  }
+  .sep {
+    margin: 0 0.5em;
+    color: var(--ink-faint);
+  }
+</style>

@@ -1,0 +1,40 @@
+---
+interface Props {
+  model?: string;
+}
+const { model } = Astro.props;
+---
+
+<figure class="reflection">
+  <div class="body"><slot /></div>
+  <figcaption>
+    {model ? `written with ${model}` : 'machine-assisted'}
+  </figcaption>
+</figure>
+
+<style>
+  .reflection {
+    margin: 2rem 0;
+    padding-left: var(--rail-gap);
+    border-left: 1px solid transparent;
+    /* broken rule: a hairline that does not hold */
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--ink-faint) 0 5px,
+      transparent 5px 11px
+    );
+    background-repeat: no-repeat;
+    background-size: 1px 100%;
+    background-position: left top;
+  }
+  .body {
+    color: var(--ink-soft);
+  }
+  figcaption {
+    margin-top: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--ink-faint);
+  }
+</style>

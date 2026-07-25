@@ -1,0 +1,59 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const writings = await getCollection('writings');
+  return writings.map((w) => ({ params: { slug: w.id }, props: { entry: w } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+---
+
+<Layout title={d.title} subtitle={d.subtitle}>
+  <Content />
+
+  {d.models.length > 0 && (
+    <aside class="notice">
+      Machine-assisted: {d.models.join(', ')}.
+      {d.reviewer && d.reviewed && (
+        <> Read against its sources by {d.reviewer} on {d.reviewed.toISOString().slice(0, 10)}.</>
+      )}
+    </aside>
+  )}
+
+  {d.citations.length > 0 && (
+    <section class="sources">
+      <h2>Sources</h2>
+      <ul>
+        {d.citations.map((c) => (
+          <li>
+            <a href={c.url ?? `https://suttacentral.net/${c.ref}`}>{c.ref}</a>
+            {' · '}trans. {c.translator}{' · '}{c.licence}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</Layout>
+
+<style>
+  .notice {
+    margin: 3.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    border: 1px dashed var(--ink-faint);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .sources ul { list-style: none; margin: 0; padding: 0; }
+  .sources li {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    margin-bottom: 0.4rem;
+  }
+</style>

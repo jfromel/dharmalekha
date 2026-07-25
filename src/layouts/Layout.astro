@@ -1,0 +1,122 @@
+---
+import '@fontsource/spectral/400.css';
+import '@fontsource/spectral/400-italic.css';
+import '@fontsource/spectral/600.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '../styles/tokens.css';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+}
+const { title, subtitle } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} — Dharmalekha</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="folio">
+      <a class="wordmark" href="/">Dharmalekha</a>
+      <p class="gloss">dhamma + lekhā — dharma writing, freely given</p>
+    </header>
+
+    <main>
+      <h1>{title}</h1>
+      {subtitle && <p class="subtitle">{subtitle}</p>}
+      <slot />
+    </main>
+
+    <footer>
+      <p>Site text CC0. Translation licences are named on each quotation.</p>
+    </footer>
+
+    <style is:global>
+      *, *::before, *::after { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--leaf);
+        color: var(--ink);
+        font-family: var(--font-body);
+        font-size: 1.0625rem;
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .folio {
+        border-top: 2px solid var(--brass);
+        border-bottom: 1px solid var(--brass);
+        background: var(--leaf-deep);
+        padding: 1.75rem 1.5rem;
+        text-align: center;
+      }
+      .wordmark {
+        display: block;
+        font-size: 1.5rem;
+        letter-spacing: 0.18em;
+        text-transform: lowercase;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .gloss {
+        margin: 0.4rem 0 0;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        letter-spacing: 0.04em;
+        color: var(--ink-soft);
+      }
+
+      main {
+        max-width: 34em;
+        margin: 0 auto;
+        padding: 3.5rem 1.5rem 4rem;
+      }
+
+      h1 {
+        font-weight: 600;
+        font-size: 1.75rem;
+        line-height: 1.25;
+        margin: 0 0 0.5rem;
+      }
+      h2 {
+        font-weight: 600;
+        font-size: 1.1rem;
+        letter-spacing: 0.01em;
+        margin: 2.75rem 0 0.75rem;
+      }
+      .subtitle {
+        margin: 0 0 2.5rem;
+        color: var(--ink-soft);
+        font-style: italic;
+      }
+
+      a { color: var(--brass); }
+
+      hr {
+        border: 0;
+        margin: 3rem auto;
+        height: 6px;
+        width: 3.5rem;
+        background-image: radial-gradient(circle, var(--ink-faint) 2.5px, transparent 2.75px);
+        background-size: 1.75rem 6px;
+        background-repeat: repeat-x;
+      }
+
+      footer {
+        max-width: 34em;
+        margin: 0 auto;
+        padding: 0 1.5rem 4rem;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        color: var(--ink-faint);
+      }
+      footer p { margin: 0; }
+    </style>
+  </body>
+</html>
