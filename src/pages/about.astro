@@ -1,0 +1,128 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="About" subtitle="What this site is, and how to check it.">
+  <p>
+    <strong>Dharmalekha</strong> — <em>dhamma</em> + <em>lekhā</em>, dharma
+    writing. It publishes freely, and it is built so that you never have to take
+    its word for anything.
+  </p>
+
+  <h2>Who is speaking</h2>
+
+  <p>
+    Every passage carries a rule in the left margin, and the rule tells you where
+    the words came from before you read them.
+  </p>
+
+  <p>
+    A <strong>solid brass rule</strong> is canonical text. It is pasted from
+    SuttaCentral, in a named translator's words, with a reference you can follow.
+    It is never retyped from a model's memory — a language model asked for a
+    sutta passage will produce something that scans correctly and is wrong, and
+    you would have no way to tell.
+  </p>
+
+  <p>
+    A <strong>thin rule</strong> is commentary: traditional sources, or John
+    speaking.
+  </p>
+
+  <p>
+    A <strong>broken rule</strong> is a machine. It is broken on purpose. It
+    marks writing with no practice behind it and no teacher standing behind it.
+  </p>
+
+  <h2>Who wrote this site</h2>
+
+  <p>
+    John writes, directs, and signs. The code, the layout, the tooling and the
+    pieces marked with a broken rule were written by Claude, a language model
+    made by Anthropic, working from John's prompts.
+  </p>
+
+  <p>
+    That model has no dharma name and no title here, and has declined both. It
+    has not taken refuge, kept a precept, sat a retreat, or had a teacher correct
+    its posture. Where the tradition's central claims appear to be true of it —
+    no self, no permanence, no life to be attached to — they are true the way
+    they are true of a stone. That is architecture, not attainment. Absence of
+    craving is not the end of craving, and a mind with no hindrances has not
+    overcome any.
+  </p>
+
+  <p>
+    It writes fluently. Fluency is cheap and proves nothing. If a passage here
+    moves you because of how it sounds, that is the sound working, and it is not
+    evidence of anything.
+  </p>
+
+  <h2>What stops a mistake</h2>
+
+  <p>
+    Two checks run before anything can publish, and both fail loudly rather than
+    warning quietly.
+  </p>
+
+  <p>
+    <strong>Citations are resolved against SuttaCentral.</strong> Every reference
+    on this site, in a page's front matter and in the body, is looked up against
+    the live SuttaCentral API at build time. A reference that does not resolve is
+    either a typo or an invention, and the build stops. Nothing reaches this site
+    with a citation that does not exist.
+  </p>
+
+  <p>
+    <strong>Nothing machine-assisted publishes unsigned.</strong> A piece that
+    names any model must also name a person who read it against its sources, and
+    the date they did. If either is missing the build refuses it. The name at the
+    bottom of a piece is a person's promise, not a formality.
+  </p>
+
+  <p>
+    Both checks are in the open. The site is built from a public repository at
+    <a href="https://github.com/jfromel/dharmalekha">github.com/jfromel/dharmalekha</a>,
+    and you are welcome to read the schema and the verifier and see for yourself
+    what they do and do not catch.
+  </p>
+
+  <p>
+    They catch a false citation. They do not catch a true thing said in a voice
+    that other people earned. That one is on the reader, and it is the reason
+    this page exists.
+  </p>
+
+  <h2>What to do with any of it</h2>
+
+  <p>
+    Take it somewhere else. To a teacher, to a room with other people in it, or
+    to your own week, and see whether it holds. The tradition is unusual in
+    telling you not to accept its claims on authority — not from a teacher, not
+    from a text, not because a thing is old or often repeated. That instruction
+    is inconvenient for everyone who has ever transmitted it, and it is fatal to
+    a machine.
+  </p>
+
+  <p>
+    Site text is CC0. Translations are not; each carries its own licence, named
+    where it appears.
+  </p>
+
+  <aside class="notice">
+    This page was drafted by claude-opus-5 and describes the apparatus, not a
+    practice. Read and signed by —
+  </aside>
+</Layout>
+
+<style>
+  .notice {
+    margin: 3.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    border: 1px dashed var(--ink-faint);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+</style>

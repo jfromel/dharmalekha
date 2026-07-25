@@ -23,3 +23,6 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .cache/
+
+# book — private raw material (chat transcripts, notes). Local only, never push.
+book/
