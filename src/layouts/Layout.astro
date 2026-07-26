@@ -10,6 +10,17 @@ interface Props {
   subtitle?: string;
 }
 const { title, subtitle } = Astro.props;
+
+const nav = [
+  { href: '/', label: 'Writings' },
+  { href: '/writings/colophon/', label: 'Colophon' },
+  { href: '/about/', label: 'About' },
+];
+// Current when the path is this link's page. Home matches only the root;
+// the others match their section so a deeper URL still marks its parent.
+const path = Astro.url.pathname;
+const isCurrent = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href.replace(/\/$/, ''));
 ---
 
 <!doctype html>
@@ -24,6 +35,13 @@ const { title, subtitle } = Astro.props;
     <header class="folio">
       <a class="wordmark" href="/">Dharmalekha</a>
       <p class="gloss">dhamma + lekhā — dharma writing, freely given</p>
+      <nav class="rail" aria-label="Primary">
+        {nav.map((item) => (
+          <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+            {item.label}
+          </a>
+        ))}
+      </nav>
     </header>
 
     <main>
@@ -70,6 +88,29 @@ const { title, subtitle } = Astro.props;
         font-size: 0.7rem;
         letter-spacing: 0.04em;
         color: var(--ink-soft);
+      }
+      .rail {
+        margin: 1.1rem 0 0;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1.4rem;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .rail a {
+        color: var(--ink-soft);
+        text-decoration: none;
+      }
+      .rail a:hover { color: var(--brass); }
+      /* The page you are on: brass, with a hairline underline echoing the
+         folio rules. Not bold — the mark should be quiet. */
+      .rail a[aria-current='page'] {
+        color: var(--brass);
+        border-bottom: 1px solid var(--brass);
+        padding-bottom: 0.15rem;
       }
 
       main {
