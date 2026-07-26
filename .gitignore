@@ -26,3 +26,9 @@ pnpm-debug.log*
 
 # book — private raw material (chat transcripts, notes). Local only, never push.
 book/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
