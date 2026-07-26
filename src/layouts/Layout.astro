@@ -9,7 +9,12 @@ interface Props {
   title: string;
   subtitle?: string;
 }
-const { title, subtitle } = Astro.props;
+// Accept props directly (.astro pages) or via markdown frontmatter (.md pages
+// that use this file as their `layout`), so /terms and /privacy can be plain
+// markdown and still get the folio masthead.
+const props = Astro.props as { title?: string; subtitle?: string; frontmatter?: { title?: string; subtitle?: string } };
+const title = props.title ?? props.frontmatter?.title ?? '';
+const subtitle = props.subtitle ?? props.frontmatter?.subtitle;
 
 const nav = [
   { href: '/', label: 'Writings' },
@@ -54,6 +59,7 @@ const isCurrent = (href: string) =>
 
     <footer>
       <p>Site text CC0. Translation licences are named on each quotation.</p>
+      <p style="margin-top:0.5rem"><a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a></p>
     </footer>
 
     <style is:global>
