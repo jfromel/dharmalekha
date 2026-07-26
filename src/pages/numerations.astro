@@ -1,0 +1,55 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+// A Numeration is any writing filed under numerations/. Sorted by its number
+// so the shelf cascades: 4.1, 4.2, … 8.1, … — natural (numeric) order.
+const items = (await getCollection('writings'))
+  .filter((w) => w.id.startsWith('numerations/') && !w.data.draft)
+  .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
+---
+
+<Layout
+  title="Numerations"
+  subtitle="The tradition counts. The Four Truths, the Eightfold Path, the Four Jhānas — a growing shelf of the numbered lists, each one sourced from the canon and reflected on."
+>
+  <ul class="index">
+    {items.map((w) => (
+      <li class={`entry ${w.data.tier}`}>
+        <a href={`/writings/${w.id}/`}>{w.data.title}</a>
+        <p class="meta">
+          {w.data.published.toISOString().slice(0, 10)}
+          <span class="sep">·</span>
+          {w.data.tier}
+        </p>
+      </li>
+    ))}
+    {items.length === 0 && <li class="meta">Nothing counted yet.</li>}
+  </ul>
+</Layout>
+
+<style>
+  .index { list-style: none; margin: 0; padding: 0; }
+  .entry {
+    margin: 0 0 2rem;
+    padding-left: var(--rail-gap);
+  }
+  .entry.canonical { border-left: 3px solid var(--brass); }
+  .entry.commentary { border-left: 1px solid var(--ink-soft); }
+  .entry.reflection {
+    background-image: repeating-linear-gradient(
+      to bottom, var(--ink-faint) 0 5px, transparent 5px 11px);
+    background-repeat: no-repeat;
+    background-size: 1px 100%;
+    background-position: left top;
+  }
+  .entry a { text-decoration: none; font-size: 1.15rem; }
+  .entry a:hover { text-decoration: underline; }
+  .meta {
+    margin: 0.2rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+  }
+  .sep { margin: 0 0.5em; }
+</style>

@@ -1,0 +1,125 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  // Drafts get no page — a borrowed term stays out of the built site until it
+  // has been verified.
+  const terms = (await getCollection('lexicon')).filter((t) => !t.data.draft);
+  return terms.map((t) => ({ params: { slug: t.id }, props: { entry: t } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+
+// Earned backlinks: writings that genuinely declare this term. The edge is a
+// human's claim in frontmatter, not a text-scrape guess — so the weave cannot
+// invent a connection that isn't there.
+const appearsIn = (await getCollection('writings'))
+  .filter((w) => !w.data.draft && (w.data.terms ?? []).includes(entry.id))
+  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+
+// Term-to-term relations, computed both directions so a single `see` on either
+// entry lights up on both — interbeing without double-bookkeeping.
+const published = (await getCollection('lexicon')).filter((t) => !t.data.draft);
+const relatedIds = new Set([
+  ...d.see,
+  ...published.filter((t) => t.data.see.includes(entry.id)).map((t) => t.id),
+]);
+relatedIds.delete(entry.id);
+const related = published.filter((t) => relatedIds.has(t.id));
+---
+
+<Layout title={d.term} subtitle={d.gloss}>
+  <p class="lang">
+    {d.language}
+    {d.roman && d.roman !== d.term ? <><span class="sep">·</span>{d.roman}</> : null}
+  </p>
+
+  <div class={`gloss-body ${d.provenance}`}>
+    <Content />
+  </div>
+
+  {d.models.length > 0 && (
+    <aside class="notice">
+      Machine-assisted: {d.models.join(', ')}.
+      {d.reviewer && d.reviewed && (
+        <> Read and signed by {d.reviewer} on {d.reviewed.toISOString().slice(0, 10)}.</>
+      )}
+    </aside>
+  )}
+
+  {d.citations.length > 0 && (
+    <section class="weave">
+      <h2>Sources</h2>
+      <ul>
+        {d.citations.map((c) => (
+          <li>
+            <a href={c.url ?? `https://suttacentral.net/${c.ref}`}>{c.ref}</a>
+            {' · '}trans. {c.translator}{' · '}{c.licence}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {related.length > 0 && (
+    <section class="weave">
+      <h2>See also</h2>
+      <ul>
+        {related.map((t) => (
+          <li><a href={`/lexicon/${t.id}/`}>{t.data.term}</a> — {t.data.gloss}</li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {appearsIn.length > 0 && (
+    <section class="weave">
+      <h2>Appears in</h2>
+      <ul>
+        {appearsIn.map((w) => (
+          <li><a href={`/writings/${w.id}/`}>{w.data.title}</a></li>
+        ))}
+      </ul>
+    </section>
+  )}
+</Layout>
+
+<style>
+  .lang {
+    margin: 0 0 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+  }
+  .sep { margin: 0 0.5em; }
+  .gloss-body { padding-left: var(--rail-gap); }
+  .gloss-body.canonical { border-left: 3px solid var(--brass); }
+  .gloss-body.commentary { border-left: 1px solid var(--ink-soft); }
+  .gloss-body.invented {
+    background-image: repeating-linear-gradient(
+      to bottom, var(--ink-faint) 0 5px, transparent 5px 11px);
+    background-repeat: no-repeat;
+    background-size: 1px 100%;
+    background-position: left top;
+  }
+  .notice {
+    margin: 3.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    border: 1px dashed var(--ink-faint);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .weave { margin-top: 2.5rem; }
+  .weave ul { list-style: none; margin: 0; padding: 0; }
+  .weave li {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    margin-bottom: 0.4rem;
+  }
+</style>

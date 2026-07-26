@@ -54,6 +54,15 @@ const writings = defineCollection({
     citations: z.array(citation).default([]),
 
     /**
+     * Lexicon terms this piece genuinely uses. Each string is a slug in the
+     * `lexicon` collection; the build reads them to weave backlinks — a term's
+     * page lists every writing that uses it. Declare only a term the text
+     * actually invokes. A false edge is a false claim about what inter-is with
+     * what, and the whole point of the weave is that its edges are earned.
+     */
+    terms: z.array(z.string()).default([]),
+
+    /**
      * Nothing publishes unreviewed. `reviewed` is the date a human read the
      * piece against its sources; `reviewer` is who. The build refuses to ship
      * a model-assisted piece without both.
@@ -84,4 +93,58 @@ const writings = defineCollection({
     ),
 });
 
-export const collections = { writings };
+/**
+ * The Lexicon. Words gathered — legein, not dictare — each wearing where it
+ * came from, the same ethic as the writings tiers:
+ *
+ *   canonical  — a term attested in a source text; must carry a citation,
+ *                verified against SuttaCentral before it can publish
+ *   commentary — a lexical or etymological reading from scholarship
+ *   invented   — coined here (a term of SangBhasa); marked as a coinage,
+ *                claims no canon, and so needs no external verification
+ *
+ * A borrowed term that has not yet been checked against a real source stays
+ * `draft: true` — present in the repo, out of the published build — until the
+ * verification is done. Invented-and-labelled ships freely; borrowed-and-
+ * asserted waits. Same rule as the rest of the site, applied to single words.
+ */
+const lexicon = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/lexicon' }),
+  schema: z.object({
+    term: z.string(), // headword as written — diacritics and all
+    roman: z.string().optional(), // plain-ASCII wordmark, e.g. "SangBhasa"
+    language: z.string(), // "Pali", "Sanskrit", "SangBhasa (invented)" ...
+    gloss: z.string(), // one line of English sense
+
+    provenance: z.enum(['canonical', 'commentary', 'invented']),
+    citations: z.array(citation).default([]),
+
+    /** Earned "see also" edges — slugs of related Lexicon entries. */
+    see: z.array(z.string()).default([]),
+
+    models: z.array(z.string()).default([]),
+    reviewed: z.preprocess(
+      (v) => (v === null || v === '' ? undefined : v),
+      z.coerce.date().optional(),
+    ),
+    reviewer: z.preprocess(
+      (v) => (v === null || v === '' ? undefined : v),
+      z.string().min(1).optional(),
+    ),
+
+    draft: z.boolean().default(false),
+  })
+    // A published canonical entry must carry a citation — the same gate the
+    // writings tier enforces, so a borrowed word cannot wear the brass rule
+    // until it has been verified. Drafts are exempt: they do not publish.
+    .refine(
+      (d) => d.draft || d.provenance !== 'canonical' || d.citations.length > 0,
+      { message: 'A published canonical Lexicon entry must carry a citation.' },
+    )
+    .refine(
+      (d) => d.draft || d.models.length === 0 || (d.reviewed && d.reviewer),
+      { message: 'A model-assisted Lexicon entry needs `reviewed` and `reviewer` before it publishes.' },
+    ),
+});
+
+export const collections = { writings, lexicon };

@@ -18,7 +18,10 @@ import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
-const CONTENT_DIR = 'src/content/writings';
+// Both collections carry citations now: the writings, and any canonical
+// Lexicon entry. A borrowed word cannot wear the brass rule until its
+// reference resolves here, the same as a sutta quotation.
+const CONTENT_DIRS = ['src/content/writings', 'src/content/lexicon'];
 const CACHE_PATH = '.cache/suttacentral.json';
 const API = (uid) => `https://suttacentral.net/api/suttaplex/${encodeURIComponent(uid)}`;
 
@@ -88,12 +91,13 @@ async function resolve(uid, cache) {
 }
 
 const main = async () => {
-  if (!existsSync(CONTENT_DIR)) {
-    console.error(red(`No content directory at ${CONTENT_DIR}`));
+  const dirs = CONTENT_DIRS.filter((d) => existsSync(d));
+  if (dirs.length === 0) {
+    console.error(red(`No content directories found (${CONTENT_DIRS.join(', ')})`));
     process.exit(1);
   }
 
-  const files = await walk(CONTENT_DIR);
+  const files = (await Promise.all(dirs.map((d) => walk(d)))).flat();
   const cache = await loadCache();
   const failures = [];
   let checked = 0;

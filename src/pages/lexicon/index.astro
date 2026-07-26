@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const terms = (await getCollection('lexicon'))
+  .filter((t) => !t.data.draft)
+  .sort((a, b) =>
+    (a.data.roman ?? a.data.term).localeCompare(b.data.roman ?? b.data.term),
+  );
+---
+
+<Layout title="Lexicon" subtitle="Words gathered, each wearing where it came from.">
+  <ul class="index">
+    {terms.map((t) => (
+      <li class={`entry ${t.data.provenance}`}>
+        <a href={`/lexicon/${t.id}/`}>{t.data.term}</a>
+        <p class="meta">
+          {t.data.language}
+          <span class="sep">·</span>
+          {t.data.provenance}
+        </p>
+        <p class="gloss">{t.data.gloss}</p>
+      </li>
+    ))}
+    {terms.length === 0 && <li class="meta">No entries yet.</li>}
+  </ul>
+</Layout>
+
+<style>
+  .index { list-style: none; margin: 0; padding: 0; }
+  .entry {
+    margin: 0 0 2rem;
+    padding-left: var(--rail-gap);
+  }
+  /* The same three rails as the writings index: solid brass for a word from
+     the canon, a thin rule for a lexical reading, a broken rule for a coinage. */
+  .entry.canonical { border-left: 3px solid var(--brass); }
+  .entry.commentary { border-left: 1px solid var(--ink-soft); }
+  .entry.invented {
+    background-image: repeating-linear-gradient(
+      to bottom, var(--ink-faint) 0 5px, transparent 5px 11px);
+    background-repeat: no-repeat;
+    background-size: 1px 100%;
+    background-position: left top;
+  }
+  .entry a { text-decoration: none; font-size: 1.15rem; }
+  .entry a:hover { text-decoration: underline; }
+  .meta {
+    margin: 0.2rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+  }
+  .gloss { margin: 0.35rem 0 0; color: var(--ink-soft); }
+  .sep { margin: 0 0.5em; }
+</style>
