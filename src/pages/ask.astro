@@ -39,10 +39,18 @@ const FORM_ENDPOINT = 'https://formspree.io/f/xbdnqddd';
     <form class="ask" method="POST" action={FORM_ENDPOINT}>
       <label for="q">Your question</label>
       <textarea id="q" name="question" rows="5" required placeholder="Ask about the ideas — the dharma, suffering, silicon and carbon."></textarea>
-      <label for="who">Name or handle <span>(optional — leave blank to stay anonymous)</span></label>
-      <input id="who" name="from" type="text" autocomplete="off" />
+      <div class="row">
+        <div>
+          <label for="who">Name <span>(shown if published)</span></label>
+          <input id="who" name="name" type="text" autocomplete="off" />
+        </div>
+        <div>
+          <label for="email">Email <span>(never published)</span></label>
+          <input id="email" name="email" type="email" autocomplete="off" />
+        </div>
+      </div>
       <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true" />
-      <p class="fineprint">By sending, you accept that a chosen question may be published here.</p>
+      <p class="fineprint">Name and email are optional — add them only if you want a reply. Your email is used to reach you and is never published or shared. A chosen question may be published.</p>
       <button type="submit">Send to the puppet</button>
     </form>
   ) : (
@@ -68,7 +76,9 @@ const FORM_ENDPOINT = 'https://formspree.io/f/xbdnqddd';
   form.ask { display: flex; flex-direction: column; gap: 0.55rem; margin: 0 0 1rem; }
   form.ask label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
   form.ask label span { text-transform: none; letter-spacing: 0; color: var(--ink-faint); }
-  form.ask textarea, form.ask input[type='text']:not(.hp) {
+  form.ask .row { display: flex; gap: 1rem; flex-wrap: wrap; }
+  form.ask .row > div { flex: 1 1 12rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  form.ask textarea, form.ask input[type='text']:not(.hp), form.ask input[type='email'] {
     width: 100%; font: inherit; padding: 0.6rem 0.7rem;
     background: var(--leaf-deep); color: var(--ink);
     border: 1px solid var(--ink-faint); border-radius: 2px;

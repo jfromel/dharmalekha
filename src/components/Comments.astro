@@ -1,0 +1,69 @@
+---
+// A per-post comment block. Same gate as everything else: a comment is a
+// submission John curates; if he takes it, the puppet's reply is machine-drafted,
+// sourced from SuttaCentral, and John-signed before it appears. Submissions go
+// to the same Formspree inbox as Ask, tagged by post via the subject line.
+interface Props {
+  post: string;
+}
+const { post } = Astro.props;
+const FORM_ENDPOINT = 'https://formspree.io/f/xbdnqddd';
+---
+
+<section class="comments">
+  <hr />
+  <h2>Will the Puppet Dāruyanta Respond?</h2>
+
+  <form class="cbox" method="POST" action={FORM_ENDPOINT}>
+    <input type="hidden" name="_subject" value={`Comment · ${post}`} />
+    <input type="hidden" name="on_post" value={post} />
+
+    <label for="c-body">Your comment <span>(on this piece)</span></label>
+    <textarea id="c-body" name="comment" rows="4" required></textarea>
+
+    <div class="row">
+      <div>
+        <label for="c-name">Name <span>(shown if published)</span></label>
+        <input id="c-name" name="name" type="text" autocomplete="off" />
+      </div>
+      <div>
+        <label for="c-email">Email <span>(never published)</span></label>
+        <input id="c-email" name="email" type="email" autocomplete="off" />
+      </div>
+    </div>
+
+    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true" />
+    <button type="submit">Leave a comment</button>
+  </form>
+
+  <p class="fineprint">
+    You are commenting to a <strong>puppet</strong> — a machine. If your comment is taken, the
+    reply is machine-drafted and <strong>signed by John</strong> before it appears; not every
+    comment gets a response, or is published. Keep it to <em>this piece</em> — for a general
+    question, use <a href="/ask/">Ask the Puppet Dāruyanta</a>. Add your <strong>name and email
+    only if you want a reply</strong>: the email is used to reach you and is never published or
+    shared; your comment and name may be published. Not therapy, not crisis support.
+  </p>
+</section>
+
+<style>
+  .comments { margin-top: 1rem; }
+  .fineprint { font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.6; color: var(--ink-soft); }
+  form.cbox { display: flex; flex-direction: column; gap: 0.55rem; margin: 0 0 1rem; }
+  form.cbox .row { display: flex; gap: 1rem; flex-wrap: wrap; }
+  form.cbox .row > div { flex: 1 1 12rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  form.cbox label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-soft); }
+  form.cbox label span { text-transform: none; letter-spacing: 0; color: var(--ink-faint); }
+  form.cbox textarea, form.cbox input[type='text'], form.cbox input[type='email'] {
+    width: 100%; font: inherit; padding: 0.55rem 0.7rem;
+    background: var(--leaf-deep); color: var(--ink);
+    border: 1px solid var(--ink-faint); border-radius: 2px;
+  }
+  form.cbox .hp { position: absolute; left: -9999px; width: 1px; height: 1px; }
+  form.cbox button {
+    align-self: flex-start; margin-top: 0.2rem;
+    font-family: var(--font-mono); font-size: 0.76rem; letter-spacing: 0.06em;
+    padding: 0.5rem 1.1rem; cursor: pointer;
+    background: var(--brass); color: var(--leaf-deep); border: 0; border-radius: 2px;
+  }
+</style>

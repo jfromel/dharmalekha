@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import Comments from '../../components/Comments.astro';
 
 export async function getStaticPaths() {
   const writings = await getCollection('writings');
@@ -37,6 +38,8 @@ const d = entry.data;
       </ul>
     </section>
   )}
+
+  <Comments post={d.title} />
 </Layout>
 
 <style>
