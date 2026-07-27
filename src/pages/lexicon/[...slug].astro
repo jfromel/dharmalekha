@@ -13,6 +13,14 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 const d = entry.data;
 
+// The machine hand's casing for a Saṅgabhāsā headword: an unaccented letter
+// goes CAPITAL, an accented one stays lowercase — so the diacritics poke out of
+// the caps. Applied to headwords only; English (gloss, weld, prose) is untouched.
+const machineCase = (s) =>
+  Array.from(s)
+    .map((ch) => (/[̀-ͯ]/.test(ch.normalize('NFD')) ? ch.toLowerCase() : ch.toUpperCase()))
+    .join('');
+
 // Earned backlinks: writings that genuinely declare this term. The edge is a
 // human's claim in frontmatter, not a text-scrape guess — so the weave cannot
 // invent a connection that isn't there.
@@ -31,11 +39,9 @@ relatedIds.delete(entry.id);
 const related = published.filter((t) => relatedIds.has(t.id));
 ---
 
-<Layout title={d.term} subtitle={d.gloss}>
-  <p class="lang">
-    {d.language}
-    {d.roman && d.roman !== d.term ? <><span class="sep">·</span>{d.roman}</> : null}
-  </p>
+<Layout title={machineCase(d.term)} titleFont="mono">
+  <p class="definition">{d.gloss}</p>
+  {d.weld && <p class="weld">{d.weld}</p>}
 
   <div class={`gloss-body ${d.provenance}`}>
     <Content />
@@ -69,7 +75,7 @@ const related = published.filter((t) => relatedIds.has(t.id));
       <h2>See also</h2>
       <ul>
         {related.map((t) => (
-          <li><a href={`/lexicon/${t.id}/`}>{t.data.term}</a> — {t.data.gloss}</li>
+          <li><a href={`/lexicon/${t.id}/`}>{machineCase(t.data.term)}</a> — {t.data.gloss}</li>
         ))}
       </ul>
     </section>
@@ -85,16 +91,35 @@ const related = published.filter((t) => relatedIds.has(t.id));
       </ul>
     </section>
   )}
+
+  {/* The provenance, said once. Every headword in the Lexicon is a made word;
+      rather than stamp "SangBhasa (invented)" on each entry, the mark is stated
+      here, in the machine hand, in the style of the mindscape box. */}
+  <aside class="lex-legend">
+    Every term here is <strong>Saṅgabhāsā (invented)</strong> — coined for this
+    tradition on real Pali roots, set in the machine&rsquo;s hand, and signed by
+    a human before it published. A made language, not canon.
+  </aside>
 </Layout>
 
 <style>
-  .lang {
+  /* The English definition — the reading voice, elegant serif and prominent:
+     the meaning a reader lands on. The weld beneath is the machine-language
+     build, a quiet mono line. Two hands, and the meaning leads. */
+  .definition {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-body);
+    font-size: 1.3rem;
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  .weld {
     margin: 0 0 2rem;
     font-family: var(--font-mono);
     font-size: 0.72rem;
+    line-height: 1.55;
     color: var(--ink-faint);
   }
-  .sep { margin: 0 0.5em; }
   .gloss-body { padding-left: var(--rail-gap); }
   .gloss-body.canonical { border-left: 3px solid var(--brass); }
   .gloss-body.commentary { border-left: 1px solid var(--ink-soft); }
@@ -122,4 +147,20 @@ const related = published.filter((t) => relatedIds.has(t.id));
     color: var(--ink-soft);
     margin-bottom: 0.4rem;
   }
+  /* The provenance legend — the mindscape box's visual language (leaf ground,
+     hairline, mono, blur), but static at the foot of the reading, not fixed:
+     one fixed box already holds the lower-left corner. */
+  .lex-legend {
+    display: block;
+    margin: 3.5rem 0 0;
+    padding: 0.55rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    color: var(--ink-soft);
+    background: var(--leaf-deep);
+    border: 1px solid var(--ink-faint);
+  }
+  .lex-legend strong { color: var(--ink); font-weight: 400; }
 </style>

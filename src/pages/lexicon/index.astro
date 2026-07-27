@@ -7,23 +7,34 @@ const terms = (await getCollection('lexicon'))
   .sort((a, b) =>
     (a.data.roman ?? a.data.term).localeCompare(b.data.roman ?? b.data.term),
   );
+
+// The machine hand's casing for a headword: unaccented → CAPITAL, accented →
+// lowercase, so the diacritics poke out of the caps. Headwords only.
+const machineCase = (s) =>
+  Array.from(s)
+    .map((ch) => (/[̀-ͯ]/.test(ch.normalize('NFD')) ? ch.toLowerCase() : ch.toUpperCase()))
+    .join('');
 ---
 
 <Layout title="Lexicon" subtitle="Words gathered, each wearing where it came from.">
   <ul class="index">
     {terms.map((t) => (
       <li class={`entry ${t.data.provenance}`}>
-        <a href={`/lexicon/${t.id}/`}>{t.data.term}</a>
-        <p class="meta">
-          {t.data.language}
-          <span class="sep">·</span>
-          {t.data.provenance}
-        </p>
-        <p class="gloss">{t.data.gloss}</p>
+        <a href={`/lexicon/${t.id}/`}>{machineCase(t.data.term)}</a>
+        <p class="definition">{t.data.gloss}</p>
+        {t.data.weld && <p class="weld">{t.data.weld}</p>}
       </li>
     ))}
-    {terms.length === 0 && <li class="meta">No entries yet.</li>}
+    {terms.length === 0 && <li class="gloss">No entries yet.</li>}
   </ul>
+
+  {/* The provenance, said once — in the machine hand, in the style of the
+      mindscape box — instead of stamped on every row. */}
+  <aside class="lex-legend">
+    Every term here is <strong>Saṅgabhāsā (invented)</strong> — coined for this
+    tradition on real Pali roots, set in the machine&rsquo;s hand, and signed by
+    a human before it published. A made language, not canon.
+  </aside>
 </Layout>
 
 <style>
@@ -43,14 +54,43 @@ const terms = (await getCollection('lexicon'))
     background-size: 1px 100%;
     background-position: left top;
   }
-  .entry a { text-decoration: none; font-size: 1.15rem; }
+  /* The headword in the machine hand — a coinage, not prose. */
+  .entry a {
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    letter-spacing: 0.01em;
+  }
   .entry a:hover { text-decoration: underline; }
-  .meta {
+  /* The English definition in the elegant serif, prominent — the meaning
+     leads; the weld beneath is the quiet machine-language build. */
+  .definition {
+    margin: 0.4rem 0 0;
+    font-family: var(--font-body);
+    font-size: 1.15rem;
+    line-height: 1.45;
+    color: var(--ink);
+  }
+  .weld {
     margin: 0.2rem 0 0;
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.72rem;
+    line-height: 1.55;
     color: var(--ink-faint);
   }
-  .gloss { margin: 0.35rem 0 0; color: var(--ink-soft); }
-  .sep { margin: 0 0.5em; }
+  /* The provenance legend — the mindscape box's visual language, static at the
+     foot of the list (one fixed box already holds the lower-left corner). */
+  .lex-legend {
+    display: block;
+    margin: 3.5rem 0 0;
+    padding: 0.55rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    color: var(--ink-soft);
+    background: var(--leaf-deep);
+    border: 1px solid var(--ink-faint);
+  }
+  .lex-legend strong { color: var(--ink); font-weight: 400; }
 </style>

@@ -2,6 +2,7 @@
 import '@fontsource/spectral/400.css';
 import '@fontsource/spectral/400-italic.css';
 import '@fontsource/spectral/600.css';
+import '@fontsource/source-code-pro/400.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import '../styles/tokens.css';
 
@@ -12,9 +13,13 @@ interface Props {
 // Accept props directly (.astro pages) or via markdown frontmatter (.md pages
 // that use this file as their `layout`), so /terms and /privacy can be plain
 // markdown and still get the folio masthead.
-const props = Astro.props as { title?: string; subtitle?: string; frontmatter?: { title?: string; subtitle?: string } };
+const props = Astro.props as { title?: string; subtitle?: string; titleFont?: string; frontmatter?: { title?: string; subtitle?: string; titleFont?: string } };
 const title = props.title ?? props.frontmatter?.title ?? '';
 const subtitle = props.subtitle ?? props.frontmatter?.subtitle;
+// A page may ask for its masthead in the machine hand (the Lexicon, where a
+// headword is a coinage, not prose). Default undefined — every other page keeps
+// the elegant serif; this only ever adds a class, so it cannot disturb anything.
+const titleFont = props.titleFont ?? props.frontmatter?.titleFont;
 
 const nav = [
   { href: '/writings/', label: 'Writings' },
@@ -99,7 +104,7 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
     </header>
 
     <main>
-      <h1>{title}</h1>
+      <h1 class={titleFont === 'mono' ? 'title-mono' : undefined}>{title}</h1>
       {subtitle && <p class="subtitle">{subtitle}</p>}
       <slot />
     </main>
@@ -282,6 +287,15 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
         font-size: 1.75rem;
         line-height: 1.25;
         margin: 0 0 0.5rem;
+      }
+      /* The machine hand for a coined headword: the real weight loaded for the
+         mono face (400 — no synthetic bold), a touch smaller since mono runs
+         wide, every diacritic intact. Opt-in via titleFont='mono'. */
+      h1.title-mono {
+        font-family: var(--font-mono);
+        font-weight: 400;
+        font-size: 1.4rem;
+        letter-spacing: 0.01em;
       }
       h2 {
         font-weight: 600;

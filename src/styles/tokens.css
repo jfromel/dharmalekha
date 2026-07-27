@@ -10,7 +10,11 @@
   --rail-gap: 1.25rem;
 
   --font-body: 'Spectral', Georgia, serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  /* The machine's hand. Source Code Pro carries the full Pali diacritic set
+     natively (macrons and the retroflex dot-below/above); IBM Plex Mono stays
+     as a covering fallback. Read in the old tongue the name is mūlalekhā —
+     source-writing — the mirror of dhamma + lekhā. */
+  --font-mono: 'Source Code Pro', 'IBM Plex Mono', ui-monospace, monospace;
 
   /* Ābhāsa — the luminous mindscape. --dassana is how much stark leaf remains
      over the appearance (the reading field and the wash); --banner-h is the

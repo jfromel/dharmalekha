@@ -115,6 +115,10 @@ const lexicon = defineCollection({
     roman: z.string().optional(), // plain-ASCII wordmark, e.g. "SangBhasa"
     language: z.string(), // "Pali", "Sanskrit", "SangBhasa (invented)" ...
     gloss: z.string(), // one line of English sense
+    // The weld: how the coinage is built from its roots — the etymology in one
+    // line, shown in the machine hand beside the gloss. Optional: a borrowed
+    // root has no weld to show, and its caption falls back to the gloss alone.
+    weld: z.string().optional(),
 
     provenance: z.enum(['canonical', 'commentary', 'invented']),
     citations: z.array(citation).default([]),
