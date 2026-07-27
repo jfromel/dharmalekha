@@ -107,12 +107,14 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
       <p style="margin-top:0.5rem"><a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a></p>
     </footer>
 
-    {/* Ābhāsa wears its source, like everything else here. Visible only while
-        the appearance is showing. */}
-    <p class="mindscape-disclosure">
-      Ābhāsa — the appearance. Imagery AI-generated; decorative, not canon.
-      The words are unchanged.
-    </p>
+    {/* The persistent mindscape box, bottom-left, present in BOTH modes. In
+        Ābhāsa it discloses the appearance and offers a shift back to the plain
+        words if the reading is hard; in Dassana it invites entering the
+        appearance — so the reader meets the Dhamma as suits their practice. */}
+    <button class="mindscape-box" type="button">
+      <span class="mindscape-box__note"></span>
+      <span class="mindscape-box__act" aria-hidden="true"></span>
+    </button>
 
     <script is:inline>
       (function () {
@@ -128,6 +130,21 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
           chip.setAttribute('title', 'Switch to ' + other);
           chip.setAttribute('aria-label', 'Currently ' + LABELS[current()] + '. Switch to ' + other + '.');
         }
+        function paintBox() {
+          var box = document.querySelector('.mindscape-box');
+          if (!box) return;
+          var note = box.querySelector('.mindscape-box__note');
+          var act = box.querySelector('.mindscape-box__act');
+          if (current() === 'abhasa') {
+            if (note) note.textContent = 'Ābhāsa — the appearance. Imagery AI-generated; decorative, not canon. The words are unchanged.';
+            if (act) act.textContent = 'Shift to Dassana ›';
+            box.setAttribute('aria-label', 'Ābhāsa, the appearance. Shift to Dassana — the plain words — if the reading is hard.');
+          } else {
+            if (note) note.textContent = 'Dassana — the seeing. The words, plain and unadorned.';
+            if (act) act.textContent = 'Enter Ābhāsa ›';
+            box.setAttribute('aria-label', 'Dassana, the plain words. Enter Ābhāsa — the appearance.');
+          }
+        }
         function light() {
           // Add the visible appearance one paint after the mode is set, so the
           // opacity change transitions (fades) instead of applying instantly.
@@ -141,6 +158,7 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
           if (mode === 'abhasa') light();
           else root.classList.remove('mindscape-lit');
           paintChip();
+          paintBox();
         }
         // The post that exposes the appearance and explains it.
         var POST_URL = '/writings/abhasa-dassana/';
@@ -155,12 +173,16 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
           // exposes ābhāsa. It turns the appearance on and unlocks the banner
           // toggle for free switching thereafter.
           enter: function () { markUnlocked(); apply('abhasa'); },
-          // toggle(): the banner control. Once unlocked, flips the two modes
-          // freely. Before that, pressing it does not switch — it carries the
-          // reader to the post (still in dassana), where the box waits.
+          // toggle(): the banner chip AND the persistent bottom box. Ābhāsa ->
+          // Dassana always (the readability shift, no gate). Dassana -> Ābhāsa
+          // is free once unlocked; before that it carries the reader to the
+          // post to read it — unless already on the post, where it unlocks.
           toggle: function () {
-            if (unlocked()) { apply(current() === 'abhasa' ? 'dassana' : 'abhasa'); return; }
-            window.location.href = POST_URL;
+            if (current() === 'abhasa') { apply('dassana'); return; }
+            if (unlocked()) { apply('abhasa'); return; }
+            var onPost = location.pathname.replace(/\/+$/, '') === POST_URL.replace(/\/+$/, '');
+            if (onPost) { markUnlocked(); apply('abhasa'); }
+            else { window.location.href = POST_URL; }
           },
         };
         document.addEventListener('click', function (e) {
@@ -169,11 +191,14 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
         });
         var chip = document.querySelector('.mindscape-chip');
         if (chip) chip.addEventListener('click', function () { window.__mindscape.toggle(); });
+        var box = document.querySelector('.mindscape-box');
+        if (box) box.addEventListener('click', function () { window.__mindscape.toggle(); });
         // On load / navigation: if we arrive already in ābhāsa (the head script
         // set the mode before paint, to avoid a chrome flash), light it a paint
         // later so the appearance fades in rather than snapping.
         if (current() === 'abhasa') light();
         paintChip();
+        paintBox();
       })();
     </script>
 
@@ -416,25 +441,36 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
       .mindscape-chip .glyph { font-size: 0.85rem; line-height: 1; }
       .mindscape-chip:hover { background: var(--leaf-deep); }
 
-      .mindscape-disclosure {
+      /* The persistent mindscape box — bottom-left, present in both modes, its
+         own leaf ground so it reads over stark or over the appearance. */
+      .mindscape-box {
         position: fixed;
         left: 0.9rem;
         bottom: 0.9rem;
         z-index: 20;
-        display: none;
-        max-width: 21rem;
+        display: block;
+        max-width: 22rem;
         margin: 0;
+        text-align: left;
         font-family: var(--font-mono);
         font-size: 0.62rem;
         line-height: 1.5;
         letter-spacing: 0.01em;
         color: var(--ink-soft);
-        background: rgba(230, 220, 195, 0.9);
+        background: rgba(230, 220, 195, 0.92);
         border: 1px solid var(--ink-faint);
-        padding: 0.4rem 0.6rem;
+        padding: 0.45rem 0.65rem;
+        cursor: pointer;
         backdrop-filter: blur(2px);
       }
-      html.mindscape-lit .mindscape-disclosure { display: block; }
+      .mindscape-box:hover { border-color: var(--brass); }
+      .mindscape-box__act {
+        display: block;
+        margin-top: 0.3rem;
+        color: var(--brass);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
 
       @media (prefers-reduced-motion: reduce) {
         body::before, body::after, main { transition: none; }
