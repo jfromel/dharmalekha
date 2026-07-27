@@ -216,7 +216,14 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
       }
 
       .folio {
-        position: relative; /* anchor for the mindscape toggle */
+        /* Pinned in BOTH modes, so the toggle and the menu stay present as the
+           reader scrolls — as the lower box does; the means of the path always
+           at hand. (Also the positioning anchor for the absolute toggle.) The
+           appearance/banner image stays Ābhāsa-only, below — Dassana keeps its
+           pinned masthead but no image. */
+        position: sticky;
+        top: 0;
+        z-index: 15;
         border-top: 2px solid var(--brass);
         border-bottom: 1px solid var(--brass);
         background: var(--leaf-deep);
