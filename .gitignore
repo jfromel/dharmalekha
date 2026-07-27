@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 # book — private raw material (chat transcripts, notes). Local only, never push.
 book/
+
+# local Claude Code settings (personal hooks, e.g. the Lexicon reconciliation). Local only.
+.claude/settings.local.json
