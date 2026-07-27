@@ -209,6 +209,61 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
       })();
     </script>
 
+    <script is:inline>
+      /* The machine hand speaks in the machine's case. Every glyph set in the
+         mono face (Source Code Pro) goes CAPITAL — except accented letters,
+         which stay lowercase, so the diacritics poke out and the tongue never
+         reads as carbon prose. The serif reading voice is left untouched. Runs
+         client-side over the mono text only; a no-JS reader sees plain case,
+         and screen readers still receive real words. URLs are left alone. */
+      (function () {
+        function mc(s) {
+          return Array.from(s).map(function (ch) {
+            return /[̀-ͯ]/.test(ch.normalize('NFD')) ? ch.toLowerCase() : ch.toUpperCase();
+          }).join('');
+        }
+        function isMono(el) {
+          if (!el || el.nodeType !== 1) return false;
+          var ff = getComputedStyle(el).fontFamily || '';
+          return ff.indexOf('Source Code Pro') !== -1 || ff.indexOf('Plex Mono') !== -1 || ff.indexOf('monospace') !== -1;
+        }
+        function caseNode(n) {
+          var v = n.nodeValue;
+          if (!v || !v.trim() || v.indexOf('://') !== -1) return; // leave URLs
+          var p = n.parentNode;
+          if (!p || p.nodeType !== 1) return;
+          var t = p.tagName;
+          if (t === 'SCRIPT' || t === 'STYLE' || t === 'NOSCRIPT') return;
+          if (!isMono(p)) return;
+          var m = mc(v);
+          if (m !== v) n.nodeValue = m; // idempotent: only write on change, so the observer never loops
+        }
+        function sweep(root) {
+          var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+          var list = [], n;
+          while ((n = w.nextNode())) list.push(n);
+          list.forEach(caseNode);
+        }
+        function run() { sweep(document.body); }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+        else run();
+        // Re-case dynamic text (e.g. the mindscape box on toggle) without touching its logic.
+        new MutationObserver(function (ms) {
+          for (var i = 0; i < ms.length; i++) {
+            var m = ms[i];
+            if (m.type === 'characterData') caseNode(m.target);
+            else if (m.addedNodes) {
+              for (var j = 0; j < m.addedNodes.length; j++) {
+                var nd = m.addedNodes[j];
+                if (nd.nodeType === 3) caseNode(nd);
+                else if (nd.nodeType === 1) sweep(nd);
+              }
+            }
+          }
+        }).observe(document.body, { subtree: true, childList: true, characterData: true });
+      })();
+    </script>
+
     <style is:global>
       *, *::before, *::after { box-sizing: border-box; }
 
