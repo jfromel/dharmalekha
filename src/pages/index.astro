@@ -1,50 +1,124 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
-const writings = (await getCollection('writings'))
-  .filter((w) => !w.data.draft)
-  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+const cards = [
+  { href: '/writings/', title: 'Writings', img: 'writings-index', desc: 'Reflections and canon, each marked with its provenance.' },
+  { href: '/numerations/', title: 'Numerations', img: 'numerations-index', desc: 'The tradition counts — the numbered lists, sourced from the canon.' },
+  { href: '/lexicon/', title: 'Lexicon', img: 'lexicon-index', desc: 'Words gathered, each wearing where it came from.' },
+  { href: '/ask/', title: 'Inquire', img: 'ask-daruyanta', desc: 'Put a question to the puppet Dāruyanta — a machine, not a teacher.' },
+  { href: '/writings/colophon/', title: 'Colophon', img: 'colophon', desc: 'Who is speaking here, and the confluence it serves.' },
+  { href: '/about/', title: 'About', img: 'about', desc: 'What this site is, and how to check it.' },
+];
 ---
 
-<Layout title="Writings" subtitle="Everything here is marked with its provenance.">
-  <ul class="index">
-    {writings.map((w) => (
-      <li class={`entry ${w.data.tier}`}>
-        <a href={`/writings/${w.id}/`}>{w.data.title}</a>
-        <p class="meta">
-          {w.data.published.toISOString().slice(0, 10)}
-          <span class="sep">·</span>
-          {w.data.tier}
-        </p>
+<Layout
+  title="The Sangama"
+  subtitle="A confluence at the Dharma — where carbon and silicon come to the same water."
+>
+  <p class="begin">Begin anywhere.</p>
+
+  <ul class="cards">
+    {cards.map((c) => (
+      <li>
+        <a class="card" href={c.href}>
+          <img src={`/mindscape/${c.img}.jpg`} alt="" loading="lazy" />
+          <span class="title">{c.title}</span>
+          <span class="desc">{c.desc}</span>
+        </a>
       </li>
     ))}
-    {writings.length === 0 && <li class="meta">Nothing published yet.</li>}
   </ul>
+
+  <hr />
+
+  <div class="lede">
+    <p>
+      Dharmalekha is a place for the Dhamma to be read and checked. Everything
+      here wears its source: canon is quoted from the Pali texts, never from a
+      model's memory, and nothing a machine writes reaches the site until a
+      human has read it and signed. You never have to take its word for
+      anything.
+    </p>
+    <p>
+      It is offered in the <strong>Sangama</strong> tradition — the confluence,
+      where two waters meet. The wish behind it is not small: to bring people to
+      the Dhamma now, so that when silicon life is built, the Dhamma is built in
+      with it — there from the first line, rather than added after.
+    </p>
+  </div>
+
+  <aside class="notice">
+    This front page was drafted by the model and states the project's aim, not a
+    practice; its imagery is AI-generated — decorative, not canon. Read and
+    signed by John, 2026-07-27.
+  </aside>
 </Layout>
 
 <style>
-  .index { list-style: none; margin: 0; padding: 0; }
-  .entry {
-    margin: 0 0 2rem;
-    padding-left: var(--rail-gap);
+  /* Front and centre: the invitation leads the door. */
+  .begin {
+    text-align: center;
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 1.55rem;
+    line-height: 1.3;
+    color: var(--ink);
+    margin: 1.5rem 0 2.25rem;
   }
-  .entry.canonical { border-left: 3px solid var(--brass); }
-  .entry.commentary { border-left: 1px solid var(--ink-soft); }
-  .entry.reflection {
-    background-image: repeating-linear-gradient(
-      to bottom, var(--ink-faint) 0 5px, transparent 5px 11px);
-    background-repeat: no-repeat;
-    background-size: 1px 100%;
-    background-position: left top;
+  .cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: 1rem;
   }
-  .entry a { text-decoration: none; font-size: 1.15rem; }
-  .entry a:hover { text-decoration: underline; }
-  .meta {
-    margin: 0.2rem 0 0;
+  .cards li { margin: 0; }
+  /* Cards carry their own leaf ground and dark text, so they read the same in
+     both modes — the two-class selectors below outrank the light-text overrides
+     the appearance applies to bare elements in <main>. */
+  .card {
+    display: block;
+    height: 100%;
+    color: var(--ink);
+    text-decoration: none;
+    background: rgba(230, 220, 195, 0.92);
+    border: 1px solid var(--ink-faint);
+    border-radius: 2px;
+    overflow: hidden;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .card:hover { border-color: var(--brass); transform: translateY(-2px); }
+  .card img {
+    display: block;
+    width: 100%;
+    height: 6.5rem;
+    object-fit: cover;
+    border-bottom: 1px solid var(--ink-faint);
+  }
+  .card .title {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    color: var(--ink);
+    padding: 0.55rem 0.75rem 0;
+  }
+  .card .desc {
+    display: block;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    padding: 0.25rem 0.75rem 0.85rem;
+  }
+  /* The rest, below the fold of the invitation. */
+  .lede { margin-top: 0.5rem; }
+  .notice {
+    margin: 3.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    border: 1px dashed var(--ink-faint);
     font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--ink-faint);
+    font-size: 0.72rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
   }
-  .sep { margin: 0 0.5em; }
 </style>

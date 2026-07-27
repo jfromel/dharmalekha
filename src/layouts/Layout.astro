@@ -17,7 +17,7 @@ const title = props.title ?? props.frontmatter?.title ?? '';
 const subtitle = props.subtitle ?? props.frontmatter?.subtitle;
 
 const nav = [
-  { href: '/', label: 'Writings' },
+  { href: '/writings/', label: 'Writings' },
   { href: '/numerations/', label: 'Numerations' },
   { href: '/lexicon/', label: 'Lexicon' },
   { href: '/ask/', label: 'Inquire' },
@@ -36,7 +36,8 @@ const isCurrent = (href: string) =>
 // every reader who never goes looking — pays nothing for it. Unmapped routes
 // fall back to the site's main background.
 const MINDSCAPE_BG: Record<string, string> = {
-  '': 'writings-index', // '/' normalises to ''
+  '': 'main', // the landing — the Sangama tree/main scene ('/' normalises to '')
+  '/writings': 'writings-index', // the writings index
   '/about': 'about',
   '/ask': 'ask-daruyanta',
   '/numerations': 'numerations-index',
