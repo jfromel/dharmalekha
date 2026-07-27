@@ -28,6 +28,29 @@ const nav = [
 const path = Astro.url.pathname;
 const isCurrent = (href: string) =>
   href === '/' ? path === '/' : path.startsWith(href.replace(/\/$/, ''));
+
+// Ābhāsa — the appearance. Each page has one generated image, its luminous
+// face, served from /mindscape. It is named here but only *fetched* by the
+// browser under [data-mindscape='abhasa'] below, so the stark default — and
+// every reader who never goes looking — pays nothing for it. Unmapped routes
+// fall back to the site's main background.
+const MINDSCAPE_BG: Record<string, string> = {
+  '': 'writings-index', // '/' normalises to ''
+  '/about': 'about',
+  '/ask': 'ask-daruyanta',
+  '/numerations': 'numerations-index',
+  '/lexicon': 'lexicon-index',
+  '/lexicon/sangama': 'lexicon-sangama',
+  '/lexicon/sangabhasa': 'lexicon-sangabhasa',
+  '/writings/the-wooden-puppet': 'daruyanta',
+  '/writings/abhasa-dassana': 'daruyanta', // alternate: shares the puppet's face
+  '/writings/dukkha-first-reflection': 'dukkha-first-reflection',
+  '/writings/what-comes-free': 'what-comes-free',
+  '/writings/a-note-from-the-human': 'note-from-human',
+  '/writings/colophon': 'colophon',
+  '/writings/numerations/4-1-dukkha': 'numeration-4-1-dukkha',
+};
+const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
 ---
 
 <!doctype html>
@@ -37,8 +60,20 @@ const isCurrent = (href: string) =>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} — Dharmalekha</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      // Apply the saved mindscape before the first paint, so the page never
+      // flashes one mode then the other. An absent key means the reader has
+      // never found the door: stark, and the corner mark stays hidden. The
+      // default is always dassana; ābhāsa is only ever entered on purpose.
+      try {
+        var m = localStorage.getItem('mindscape');
+        if (m === 'abhasa' || m === 'dassana') {
+          document.documentElement.setAttribute('data-mindscape', m);
+        }
+      } catch (e) {}
+    </script>
   </head>
-  <body>
+  <body style={`--luminous-bg:url('/mindscape/${bgKey}.jpg');--luminous-banner:url('/mindscape/tree-banner-${bgKey}.jpg')`}>
     <header class="folio">
       <a class="wordmark" href="/">Dharmalekha</a>
       <p class="gloss">dhamma + lekhā — dharma writing, freely given</p>
@@ -49,6 +84,16 @@ const isCurrent = (href: string) =>
           </a>
         ))}
       </nav>
+
+      {/* The mindscape toggle, riding the top of the banner, always visible.
+          Default Dassana. Before the appearance is unlocked (by the box at the
+          foot of the Ābhāsa & Dassana post), pressing it does not switch — it
+          carries the reader to that post, still in Dassana. Once unlocked, it
+          flips the two modes freely, no redirect. */}
+      <button class="mindscape-chip" type="button" aria-live="polite">
+        <span class="glyph" aria-hidden="true">◐</span>
+        <span class="label">Dassana</span>
+      </button>
     </header>
 
     <main>
@@ -61,6 +106,76 @@ const isCurrent = (href: string) =>
       <p>Site text CC0. Translation licences are named on each quotation.</p>
       <p style="margin-top:0.5rem"><a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a></p>
     </footer>
+
+    {/* Ābhāsa wears its source, like everything else here. Visible only while
+        the appearance is showing. */}
+    <p class="mindscape-disclosure">
+      Ābhāsa — the appearance. Imagery AI-generated; decorative, not canon.
+      The words are unchanged.
+    </p>
+
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var LABELS = { abhasa: 'Ābhāsa', dassana: 'Dassana' };
+        function current() { return root.getAttribute('data-mindscape') || 'dassana'; }
+        function paintChip() {
+          var chip = document.querySelector('.mindscape-chip');
+          if (!chip) return;
+          var lbl = chip.querySelector('.label');
+          if (lbl) lbl.textContent = LABELS[current()];
+          var other = current() === 'abhasa' ? LABELS.dassana : LABELS.abhasa;
+          chip.setAttribute('title', 'Switch to ' + other);
+          chip.setAttribute('aria-label', 'Currently ' + LABELS[current()] + '. Switch to ' + other + '.');
+        }
+        function light() {
+          // Add the visible appearance one paint after the mode is set, so the
+          // opacity change transitions (fades) instead of applying instantly.
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () { root.classList.add('mindscape-lit'); });
+          });
+        }
+        function apply(mode) {
+          root.setAttribute('data-mindscape', mode);
+          try { localStorage.setItem('mindscape', mode); } catch (e) {}
+          if (mode === 'abhasa') light();
+          else root.classList.remove('mindscape-lit');
+          paintChip();
+        }
+        // The post that exposes the appearance and explains it.
+        var POST_URL = '/writings/abhasa-dassana/';
+        function unlocked() {
+          try { return localStorage.getItem('mindscape:unlocked') === '1'; } catch (e) { return false; }
+        }
+        function markUnlocked() {
+          try { localStorage.setItem('mindscape:unlocked', '1'); } catch (e) {}
+        }
+        window.__mindscape = {
+          // enter(): the box at the foot of the post — the ONLY thing that
+          // exposes ābhāsa. It turns the appearance on and unlocks the banner
+          // toggle for free switching thereafter.
+          enter: function () { markUnlocked(); apply('abhasa'); },
+          // toggle(): the banner control. Once unlocked, flips the two modes
+          // freely. Before that, pressing it does not switch — it carries the
+          // reader to the post (still in dassana), where the box waits.
+          toggle: function () {
+            if (unlocked()) { apply(current() === 'abhasa' ? 'dassana' : 'abhasa'); return; }
+            window.location.href = POST_URL;
+          },
+        };
+        document.addEventListener('click', function (e) {
+          var t = e.target.closest && e.target.closest('[data-mindscape-enter]');
+          if (t) { e.preventDefault(); window.__mindscape.enter(); }
+        });
+        var chip = document.querySelector('.mindscape-chip');
+        if (chip) chip.addEventListener('click', function () { window.__mindscape.toggle(); });
+        // On load / navigation: if we arrive already in ābhāsa (the head script
+        // set the mode before paint, to avoid a chrome flash), light it a paint
+        // later so the appearance fades in rather than snapping.
+        if (current() === 'abhasa') light();
+        paintChip();
+      })();
+    </script>
 
     <style is:global>
       *, *::before, *::after { box-sizing: border-box; }
@@ -76,6 +191,7 @@ const isCurrent = (href: string) =>
       }
 
       .folio {
+        position: relative; /* anchor for the mindscape toggle */
         border-top: 2px solid var(--brass);
         border-bottom: 1px solid var(--brass);
         background: var(--leaf-deep);
@@ -166,6 +282,163 @@ const isCurrent = (href: string) =>
         color: var(--ink-faint);
       }
       footer p { margin: 0; }
+
+      /* ——— Ābhāsa: the appearance ———
+         Two fixed layers behind everything: the generated image, and a leaf
+         scrim over it so the words stay plain. Both are always present but
+         transparent; only under [data-mindscape='abhasa'] do they rise — and
+         only then does the browser fetch the image, because that is the only
+         rule that names it. Dassana, the default, stays exactly as it was. */
+      body::before,
+      body::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 1s ease;
+      }
+      body::before {
+        z-index: -2;
+        background-size: cover;
+        background-position: center;
+        /* Contrast + saturation give the image an HDR-ish pop under the leaf
+           wash, and lift soft, hazy areas (cloudy skies, misty distance) that
+           would otherwise read as blur. */
+        filter: contrast(1.32) saturate(1.2);
+      }
+      /* The remaining stark: a leaf wash whose strength is --dassana. */
+      body::after {
+        z-index: -1;
+        background: var(--leaf);
+      }
+      /* Fetch the image once the door has been found — either mode — so the
+         appearance can fade both in and out. The undiscovered visitor (no
+         data-mindscape at all) still fetches nothing. */
+      html[data-mindscape] body::before { background-image: var(--luminous-bg); }
+
+      /* `mindscape-lit` is the visible appearance. It is added one paint after
+         the mode is set — on load and on toggle alike — so the appearance rises
+         over ~1s every time a page is entered in ābhāsa, instead of snapping in.
+         The graphic rises to full; the wash rises only to --dassana. */
+      html.mindscape-lit body::before { opacity: 1; }
+      html.mindscape-lit body::after { opacity: var(--dassana); }
+
+      /* The reading field drops to --dassana; the words keep a soft halo rather
+         than a slab, so dassana can recede this far without dissolving. */
+      main { transition: background 1s ease; }
+      /* Clear text over a clear image: no panel, no blur. Each glyph carries a
+         tight light keyline so a single ink colour reads over the sharp
+         appearance — the image stays fully detailed behind it. (--dassana adds
+         a leaf ground only if raised; 0 leaves the image untouched. The frosted
+         variant that blurs the image is kept in _saved-frosted-glass.css.) */
+      html.mindscape-lit main {
+        /* No panel — the appearance shows through; the only leaf is the global
+           --dassana wash. */
+        background: transparent;
+        /* Light, set the same way as the masthead over the banner. */
+        color: #f4ebd6;
+      }
+      /* Everything in the reading column goes light over the appearance. Utility
+         classes and the Canonical/Reflection components set their own colours,
+         so they are named here explicitly or they stay dark. */
+      html.mindscape-lit main :is(h1, h2, h3, h4, p, li, blockquote, strong, em, span, dt, dd, figcaption, label),
+      html.mindscape-lit main .canonical .body,
+      html.mindscape-lit main .reflection .body {
+        color: #f4ebd6;
+      }
+      /* Quiet/secondary text a dimmer light. */
+      html.mindscape-lit main :is(.subtitle, .meta, .gloss, .lang, .fineprint, .notice, .sources li, .weave li, figcaption) {
+        color: #d9ccb0;
+      }
+      /* Links a light warm gold; index/list titles light like the body. */
+      html.mindscape-lit main a { color: #ecc987; }
+      html.mindscape-lit main .entry a { color: #f4ebd6; }
+      /* Body type set like the banner: light, with a slight dark drop to the
+         lower-right so it lifts off the image. */
+      html.mindscape-lit main :is(h1, h2, h3, p, li, blockquote, figcaption, label, a) {
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+      }
+      html.mindscape-lit footer {
+        color: #d9ccb0;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+      }
+      html.mindscape-lit footer a { color: #ecc987; }
+
+      /* In ābhāsa the masthead IS the banner: the folio wears the page's own
+         graphic, pins to the top, and carries the wordmark and nav on it. The
+         banner image is only ever named here, under .mindscape-lit, so the
+         stark default and the undiscovered visitor never fetch it. */
+      html.mindscape-lit .folio {
+        position: sticky;
+        top: 0;
+        z-index: 15;
+        min-height: var(--banner-h);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-image:
+          linear-gradient(rgba(43, 33, 24, 0.42), rgba(43, 33, 24, 0.56)),
+          var(--luminous-banner);
+        background-size: cover;
+        background-position: center 40%;
+      }
+      /* Light type over the banner, shadowed so it holds over any crop. */
+      html.mindscape-lit .wordmark { color: #f4ebd6; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55); }
+      html.mindscape-lit .gloss { color: #e6d9c0; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
+      html.mindscape-lit .rail a { color: #e6d9c0; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55); }
+      html.mindscape-lit .rail a:hover { color: #fff; }
+      html.mindscape-lit .rail a[aria-current='page'] {
+        color: #fff;
+        border-bottom-color: #fff;
+      }
+
+      /* The mindscape toggle — always present, riding the top of the banner. */
+      .mindscape-chip {
+        position: absolute;
+        top: 0.6rem;
+        right: 0.9rem;
+        z-index: 16;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        color: var(--brass);
+        background: rgba(230, 220, 195, 0.9);
+        border: 1px solid var(--brass);
+        padding: 0.35rem 0.6rem;
+        border-radius: 1px;
+        cursor: pointer;
+        backdrop-filter: blur(2px);
+      }
+      .mindscape-chip .glyph { font-size: 0.85rem; line-height: 1; }
+      .mindscape-chip:hover { background: var(--leaf-deep); }
+
+      .mindscape-disclosure {
+        position: fixed;
+        left: 0.9rem;
+        bottom: 0.9rem;
+        z-index: 20;
+        display: none;
+        max-width: 21rem;
+        margin: 0;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        line-height: 1.5;
+        letter-spacing: 0.01em;
+        color: var(--ink-soft);
+        background: rgba(230, 220, 195, 0.9);
+        border: 1px solid var(--ink-faint);
+        padding: 0.4rem 0.6rem;
+        backdrop-filter: blur(2px);
+      }
+      html.mindscape-lit .mindscape-disclosure { display: block; }
+
+      @media (prefers-reduced-motion: reduce) {
+        body::before, body::after, main { transition: none; }
+      }
     </style>
   </body>
 </html>

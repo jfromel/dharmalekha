@@ -1,0 +1,29 @@
+---
+// The end-of-post trigger. Pressing it is the first seeing of the other mode:
+// it enters ābhāsa, and by entering unlocks the corner mark that rides every
+// page thereafter. Nothing is revealed that the reader has not first walked
+// the length of the page to reach. The default remains dassana; this is the
+// one door into the appearance, and it is placed at the end on purpose.
+---
+
+<button class="luminous-trigger" type="button" data-mindscape-enter>
+  Show me the luminous
+</button>
+
+<style>
+  .luminous-trigger {
+    display: inline-block;
+    margin: 0.4rem 0 1.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brass);
+    background: transparent;
+    border: 1px solid var(--brass);
+    padding: 0.5rem 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .luminous-trigger:hover { background: var(--leaf-deep); }
+</style>

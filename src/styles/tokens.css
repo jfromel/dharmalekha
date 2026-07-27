@@ -11,4 +11,12 @@
 
   --font-body: 'Spectral', Georgia, serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* Ābhāsa — the luminous mindscape. --dassana is how much stark leaf remains
+     over the appearance (the reading field and the wash); --banner-h is the
+     height of the pinned per-page banner. */
+  /* --dassana is the leaf wash over the appearance: 0 = fully vivid image,
+     0.25 = image muted to ~75% (more ground under the body text). */
+  --dassana: 0.25;
+  --banner-h: clamp(110px, 18vh, 170px);
 }

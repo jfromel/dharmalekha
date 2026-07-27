@@ -1,0 +1,23 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   SAVED FOR A FUTURE PIECE — "seeing through a glass, dimly."
+
+   The frosted-glass reading mode: the appearance is left sharp everywhere
+   except directly behind the words, where it is blurred and faintly lightened
+   so a single ink colour reads over it. It buys very legible text by spending
+   the image's clarity behind the column — which is wrong for the everyday
+   Ābhāsa look (we want text AND image clear there), but exactly right for a
+   piece about seeing dimly. Drop this back into Layout.astro's luminous block,
+   in place of the keyline-halo rules, when that post is written.
+
+   Paired setting at the time: --dassana: 0 (no leaf wash; the frost carried
+   legibility on its own).
+   ─────────────────────────────────────────────────────────────────────────── */
+
+html.mindscape-lit main {
+  background: rgba(230, 220, 195, calc(0.14 + var(--dassana)));
+  backdrop-filter: blur(10px);
+  border-radius: 3px;
+}
+html.mindscape-lit main :is(h1, h2, h3, p, li, blockquote, figcaption) {
+  text-shadow: 0 1px 2px rgba(240, 232, 212, 0.6);
+}
