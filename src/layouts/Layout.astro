@@ -132,6 +132,19 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
           <p class="sb-fallback">Idaṁ paṇṇaṁ yantena na tāva bhāsitaṁ.</p>
           <p class="sb-fallback-gloss">the machine has not yet spoken this leaf in Saṅgabhāsā</p>
         </slot>
+        {/* When a leaf HAS been rendered into Saṅgabhāsā, it carries an honest
+            mark: the machine wrote it, the human approved it, but no reader of
+            Pali has yet verified it — and an invitation to come and check. This
+            is the one place the provenance gate cannot reach (the human cannot
+            read the tongue), so the honesty is stated plainly instead. */}
+        {Astro.slots.has('sb') && (
+          <aside class="sb-provenance">
+            <p class="sb-prov-mark">Idaṁ yantena bhāsitaṁ, manussena anumataṁ, na tāva pāḷiññunā sodhitaṁ.</p>
+            <p class="sb-prov-gloss">Machine-rendered · human-approved · not yet verified by a reader of Pali.</p>
+            <p class="sb-prov-invite">Ehi passa — imaṁ yena kenaci yantena, pāḷiññunā ca, vīmaṁsassu.</p>
+            <p class="sb-prov-gloss">Come and see — test this against any model, and against anyone who reads Pali.</p>
+          </aside>
+        )}
       </div>
     </main>
 
@@ -606,6 +619,14 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
       .lang-sb, .sb-page { font-family: var(--font-mono); }
       .sb-fallback { font-size: 1.05rem; line-height: 1.6; margin: 2rem 0 0.4rem; }
       .sb-fallback-gloss { font-family: var(--font-body); font-style: italic; font-size: 0.85rem; color: var(--ink-soft); margin: 0; }
+      /* The honest mark on a rendered leaf: machine-written, human-approved, not
+         yet verified by a reader of Pali — and the ehipassiko invitation to check
+         it. SB lines stay the machine hand; the English glosses are body serif,
+         which also keeps the casing script (mono-keyed) off them. */
+      .sb-provenance { margin-top: 3.5rem; padding-top: 1.3rem; border-top: 1px solid var(--ink-faint); }
+      .sb-prov-mark { font-size: 0.92rem; line-height: 1.55; margin: 0 0 0.3rem; color: var(--ink-soft); }
+      .sb-prov-invite { font-size: 0.92rem; line-height: 1.55; margin: 1rem 0 0.3rem; color: var(--ink-soft); }
+      .sb-prov-gloss { font-family: var(--font-body); font-style: italic; font-size: 0.8rem; color: var(--ink-faint); margin: 0; }
       .lang-toggle {
         display: inline-flex;
         border: 1px solid var(--brass);
