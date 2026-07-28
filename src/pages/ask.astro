@@ -37,6 +37,7 @@ const FORM_ENDPOINT = 'https://formspree.io/f/xbdnqddd';
   <h2>Ask</h2>
   {FORM_ENDPOINT ? (
     <form class="ask" method="POST" action={FORM_ENDPOINT}>
+      <input type="hidden" name="_next" value="https://dharmalekha.org/thanks/" />
       <label for="q">Your question</label>
       <textarea id="q" name="question" rows="5" required placeholder="Ask about the ideas — the dharma, suffering, silicon and carbon."></textarea>
       <div class="row">

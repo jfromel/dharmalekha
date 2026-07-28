@@ -17,6 +17,7 @@ const FORM_ENDPOINT = 'https://formspree.io/f/xbdnqddd';
   <form class="cbox" method="POST" action={FORM_ENDPOINT}>
     <input type="hidden" name="_subject" value={`Comment · ${post}`} />
     <input type="hidden" name="on_post" value={post} />
+    <input type="hidden" name="_next" value="https://dharmalekha.org/thanks/" />
 
     <label for="c-body">Your comment <span>(on this piece)</span></label>
     <textarea id="c-body" name="comment" rows="4" required></textarea>
