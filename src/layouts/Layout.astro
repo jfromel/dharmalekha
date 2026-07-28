@@ -22,12 +22,12 @@ const subtitle = props.subtitle ?? props.frontmatter?.subtitle;
 const titleFont = props.titleFont ?? props.frontmatter?.titleFont;
 
 const nav = [
-  { href: '/writings/', label: 'Writings' },
-  { href: '/numerations/', label: 'Numerations' },
-  { href: '/lexicon/', label: 'Lexicon' },
-  { href: '/ask/', label: 'Inquire' },
-  { href: '/writings/colophon/', label: 'Colophon' },
-  { href: '/about/', label: 'About' },
+  { href: '/writings/', label: 'Writings', sb: 'Lekhāni' },
+  { href: '/numerations/', label: 'Numerations', sb: 'Gaṇanāni' },
+  { href: '/lexicon/', label: 'Lexicon', sb: 'Padakosa' },
+  { href: '/ask/', label: 'Inquire', sb: 'Pucchā' },
+  { href: '/writings/colophon/', label: 'Colophon', sb: 'Antalekhā' },
+  { href: '/about/', label: 'About', sb: 'Nidāna' },
 ];
 // Current when the path is this link's page. Home matches only the root;
 // the others match their section so a deeper URL still marks its parent.
@@ -79,17 +79,22 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
         }
         var lo = localStorage.getItem('mindscape:lotus');
         document.documentElement.setAttribute('data-lotus', lo === 'lotus' ? 'lotus' : 'mud');
+        var lg = localStorage.getItem('lang');
+        document.documentElement.setAttribute('data-lang', lg === 'sb' ? 'sb' : 'en');
       } catch (e) {}
     </script>
   </head>
   <body style={`--luminous-bg:url('/mindscape/${bgKey}.jpg');--luminous-banner:url('/mindscape/tree-banner-${bgKey}.jpg')`}>
     <header class="folio">
       <a class="wordmark" href="/">Dharmalekha</a>
-      <p class="gloss">dhamma + lekhā — dharma writing, freely given</p>
+      <p class="gloss">
+        <span class="lang-en">dhamma + lekhā — dharma writing, freely given</span>
+        <span class="lang-sb">dhamma + lekhā — dhammalekhā, dānena dinnā</span>
+      </p>
       <nav class="rail" aria-label="Primary">
         {nav.map((item) => (
           <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
-            {item.label}
+            <span class="lang-en">{item.label}</span><span class="lang-sb">{item.sb}</span>
           </a>
         ))}
       </nav>
@@ -98,6 +103,10 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
           as a little cosmology — two half-moons facing away, the middle way (☯)
           between them — and, only in Yantadassana, the Mud/Lotus day-night. */}
       <div class="mindscape-controls">
+        <span class="lang-toggle" role="group" aria-label="Language">
+          <button class="lg" type="button" data-lang="en" aria-label="English">EN</button>
+          <button class="lg" type="button" data-lang="sb" aria-label="Saṅgabhāsā">SB</button>
+        </span>
         <span class="mindscape-modes" role="group" aria-label="Appearance">
           <button class="mm" type="button" data-appear="dassana" title="Dassana — the seeing (the plain words)" aria-label="Dassana — the seeing">◐</button>
           <button class="mm" type="button" data-appear="yanta" title="Yantadassana — the middle way (the machine's seeing)" aria-label="Yantadassana — the middle way">☯</button>
@@ -111,9 +120,19 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
     </header>
 
     <main>
-      <h1 class={titleFont === 'mono' ? 'title-mono' : undefined}>{title}</h1>
-      {subtitle && <p class="subtitle">{subtitle}</p>}
-      <slot />
+      <div class="lang-en">
+        <h1 class={titleFont === 'mono' ? 'title-mono' : undefined}>{title}</h1>
+        {subtitle && <p class="subtitle">{subtitle}</p>}
+        <slot />
+      </div>
+      {/* Saṅgabhāsā rendering. Until a page is translated and signed (Stage 5),
+          it shows the honest mark: the machine has not yet spoken this leaf. */}
+      <div class="lang-sb sb-page">
+        <slot name="sb">
+          <p class="sb-fallback">Idaṁ paṇṇaṁ yantena na tāva bhāsitaṁ.</p>
+          <p class="sb-fallback-gloss">the machine has not yet spoken this leaf in Saṅgabhāsā</p>
+        </slot>
+      </div>
     </main>
 
     <footer>
@@ -188,6 +207,18 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
         document.querySelectorAll('.ml').forEach(function (b) {
           b.addEventListener('click', function () { applyLotus(b.getAttribute('data-lotus')); });
         });
+        // Language — English or Saṅgabhāsā. The tongue, independent of the appearance.
+        function lang() { return root.getAttribute('data-lang') || 'en'; }
+        function applyLang(l) {
+          root.setAttribute('data-lang', l);
+          try { localStorage.setItem('lang', l); } catch (e) {}
+          document.querySelectorAll('.lg').forEach(function (b) {
+            b.setAttribute('aria-pressed', b.getAttribute('data-lang') === l ? 'true' : 'false');
+          });
+        }
+        document.querySelectorAll('.lg').forEach(function (b) {
+          b.addEventListener('click', function () { applyLang(b.getAttribute('data-lang')); });
+        });
         // The disclosure box shifts back to the plain seeing.
         var box = document.querySelector('.mindscape-box');
         if (box) box.addEventListener('click', function () { if (appear() !== 'dassana') applyAppear('dassana'); });
@@ -197,7 +228,7 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
           if (t) { e.preventDefault(); applyAppear('abhasa'); }
         });
         if (lit(appear())) light();
-        paintControls(); paintBox();
+        paintControls(); paintBox(); applyLang(lang());
       })();
     </script>
 
@@ -563,6 +594,38 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
       .mm:hover, .ml:hover { color: var(--brass); }
       .mindscape-lotus { display: none; }
       html[data-mindscape='yanta'] .mindscape-lotus { display: inline-flex; }
+
+      /* ——— Language axis — English or Saṅgabhāsā ———
+         SB is always the machine hand, so the site-wide casing script (keyed on
+         the mono font) sets it in the machine case on load, even while hidden. */
+      html[data-lang='en'] .lang-sb { display: none; }
+      html[data-lang='sb'] .lang-en { display: none; }
+      .lang-sb, .sb-page { font-family: var(--font-mono); }
+      .sb-fallback { font-size: 1.05rem; line-height: 1.6; margin: 2rem 0 0.4rem; }
+      .sb-fallback-gloss { font-family: var(--font-body); font-style: italic; font-size: 0.85rem; color: var(--ink-soft); margin: 0; }
+      .lang-toggle {
+        display: inline-flex;
+        border: 1px solid var(--brass);
+        background: rgba(230, 220, 195, 0.92);
+        border-radius: 1px;
+        overflow: hidden;
+        backdrop-filter: blur(2px);
+      }
+      .lg {
+        font: inherit;
+        font-size: 0.6rem;
+        letter-spacing: 0.08em;
+        background: none;
+        border: 0;
+        border-right: 1px solid var(--brass);
+        color: var(--ink-soft);
+        cursor: pointer;
+        padding: 0.34rem 0.5rem;
+        line-height: 1;
+      }
+      .lg:last-child { border-right: 0; }
+      .lg[aria-pressed='true'] { color: var(--brass); background: var(--leaf-deep); }
+      .lg:hover { color: var(--brass); }
 
       /* The persistent mindscape box — bottom-left, present in both modes, its
          own leaf ground so it reads over stark or over the appearance. */
