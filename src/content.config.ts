@@ -34,6 +34,16 @@ const writings = defineCollection({
     published: z.coerce.date(),
 
     /**
+     * Saṅgabhāsā rendering (Stage 5). `sbTitle` is the headword in the tongue;
+     * `sb` is the reflection, one paragraph per string, set in the machine hand
+     * behind the EN/SB toggle. Canon is never machine-translated — it stays in
+     * its sourced form — so `sb` carries only the machine's own words. A piece
+     * without `sb` shows the honest "not yet spoken" mark in SB.
+     */
+    sbTitle: z.string().optional(),
+    sb: z.array(z.string()).optional(),
+
+    /**
      * The three tiers. This describes the *dominant* register of the piece;
      * individual passages are marked inline with <Canonical>, <Commentary>
      * and <Reflection>.
