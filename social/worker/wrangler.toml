@@ -1,0 +1,33 @@
+# Cloudflare Worker config for the social publisher — PARKED.
+#
+# This is a SEPARATE worker from the site's Pages deployment; it is not built or
+# deployed by pushing to the repo. It stays dormant until you deliberately:
+#
+#   1. cd social/worker
+#   2. wrangler kv namespace create SOCIAL_KV      # paste the id below
+#   3. wrangler secret put BLUESKY_HANDLE          # + BLUESKY_APP_PASSWORD, etc.
+#   4. wrangler secret put TRIGGER_KEY             # any random string, for the manual endpoint
+#   5. enable a platform in ../config.json
+#   6. wrangler deploy
+#
+# Even after deploy, nothing posts until a platform is enabled AND its secrets are
+# set — an un-provisioned run just logs "(none enabled)".
+
+name = "dharmalekha-social"
+main = "worker.mjs"
+compatibility_date = "2024-11-01"
+
+# Daily at 15:00 UTC. Change to taste; comment out to pause all scheduled runs.
+[triggers]
+crons = ["0 15 * * *"]
+
+# Posted-state store. Create the namespace (step 2) and paste its id here.
+[[kv_namespaces]]
+binding = "SOCIAL_KV"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+# Secrets are NOT set here — use `wrangler secret put <NAME>`:
+#   BLUESKY_HANDLE, BLUESKY_APP_PASSWORD
+#   MASTODON_TOKEN            (+ set platforms.mastodon.instance in ../config.json)
+#   IG_USER_ID, IG_ACCESS_TOKEN
+#   TRIGGER_KEY              (guards the manual ?key= endpoint)

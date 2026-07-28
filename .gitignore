@@ -29,3 +29,8 @@ book/
 
 # local Claude Code settings (personal hooks, e.g. the Lexicon reconciliation). Local only.
 .claude/settings.local.json
+
+# local secrets for the social worker (wrangler) — never commit
+.dev.vars
+social/**/.dev.vars
+social/.env

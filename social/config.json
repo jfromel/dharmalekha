@@ -1,0 +1,16 @@
+{
+  "_note": "Non-secret settings for the publisher. Secrets (tokens, app passwords) NEVER live here — they come from environment variables (see social/README.md). Social is a disposable projection of the site: no original content, only approved art + an invitation. Losing any platform costs nothing.",
+  "site": "https://dharmalekha.org",
+  "link": "https://dharmalekha.org/",
+  "invitation": "come and see",
+  "emoji": "🌱",
+  "imageBase": "https://dharmalekha.org/gallery",
+  "postsPerRun": 1,
+  "hashtags": [],
+  "bio": "Dharmalekha — machine-made dharma art, given freely (CC0). come and see · dharmalekha.org",
+  "platforms": {
+    "bluesky":   { "enabled": false, "handle": "" },
+    "mastodon":  { "enabled": false, "instance": "" },
+    "instagram": { "enabled": false, "note": "requires JPEG image_url; Business/Creator account + Meta app" }
+  }
+}
