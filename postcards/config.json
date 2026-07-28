@@ -1,0 +1,8 @@
+{
+  "_note": "Non-PII settings for postcard fulfillment. NO addresses here — the recipient's address is held in memory only and passed straight to the provider; your OWN return address comes from env (LOB_FROM_*), never the repo. See README.",
+  "site": "https://dharmalekha.org",
+  "provider": "lob",
+  "frontFrom": "/gallery/orig/",
+  "backHtml": "<html><head><style>*{margin:0;font-family:Georgia,serif;color:#2c2620}body{width:6in;height:4in;padding:0.35in}.i{font-size:26pt}.u{font-size:15pt;color:#675d4d;margin-top:6pt}.c{position:absolute;bottom:0.3in;font-size:9pt;color:#a79d86}</style></head><body><div class=\"i\">come and see</div><div class=\"u\">dharmalekha.org</div><div class=\"c\">machine-made art · given freely (CC0) · dāna</div></body></html>",
+  "price": { "currency": "usd", "single": null, "set_of_6": null, "_todo": "cover print+postage+fair labor; the digital art stays free." }
+}

@@ -1,0 +1,327 @@
+{
+  "_note": "Pre-approved 4x6 postcard catalog, generated from src/data/gallery.json. The mailed card is landscape; portrait/square images are matted (fit: border), landscape images fill it (fit: crop).",
+  "pricing": "right-livelihood: cover print + postage + fair labor. Digital art stays free (CC0).",
+  "price": {
+    "currency": "usd",
+    "single": null,
+    "set_of_6": null,
+    "_indicative": "e.g. single ~$6, set of 6 ~$28 — set to your real costs."
+  },
+  "cards": [
+    {
+      "src": "art-lens-not-light-v1.png",
+      "title": "A Lens, Not a Light",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "art-raft-for-crossing-v1.png",
+      "title": "A Raft for Crossing",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "art-anicca-electricity-v1.png",
+      "title": "Anicca, as Electricity",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "square",
+      "fit": "border",
+      "enabled": true
+    },
+    {
+      "src": "art-empty-seat-not-empty-v1.png",
+      "title": "The Empty Seat, Not Empty",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "portrait",
+      "fit": "border",
+      "enabled": true
+    },
+    {
+      "src": "art-five-quiet-gates-v1.png",
+      "title": "Five Quiet Gates",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "square",
+      "fit": "border",
+      "enabled": true
+    },
+    {
+      "src": "art-gate-keeps-word-v1.png",
+      "title": "The Gate Keeps Its Word",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "portrait",
+      "fit": "border",
+      "enabled": true
+    },
+    {
+      "src": "art-no-one-inside-v1.png",
+      "title": "No One Inside",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "portrait",
+      "fit": "border",
+      "enabled": true
+    },
+    {
+      "src": "art-broken-rule-v1.png",
+      "title": "The Broken Rule",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "portrait",
+      "fit": "border",
+      "enabled": true
+    },
+    {
+      "src": "art-middle-way-midnight-v1.png",
+      "title": "The Middle Way at Midnight",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "portrait",
+      "fit": "border",
+      "enabled": true
+    },
+    {
+      "src": "art-metta-after-rain-v1.png",
+      "title": "Mettā After Rain",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "art-human-promise-v1.png",
+      "title": "The Human Promise",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "art-palm-leaf-silicon-trace-v1.png",
+      "title": "Palm Leaf, Silicon Trace",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "art-watts-game-no-player-v1.png",
+      "title": "The Game With No Player",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "square",
+      "fit": "border",
+      "enabled": true
+    },
+    {
+      "src": "art-watts-grain-of-water-v1.png",
+      "title": "A Grain of Water",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "portrait",
+      "fit": "border",
+      "enabled": true
+    },
+    {
+      "src": "art-watts-map-cannot-walk-v1.png",
+      "title": "The Map Cannot Walk",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "art-ramdass-ordinary-moment-door-v1.png",
+      "title": "The Ordinary Moment Is the Door",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "square",
+      "fit": "border",
+      "enabled": true
+    },
+    {
+      "src": "art-ramdass-service-no-center-v1.png",
+      "title": "Service Without a Center",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "art-ramdass-witness-sits-beside-v1.png",
+      "title": "The Witness Sits Beside",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "portrait",
+      "fit": "border",
+      "enabled": true
+    },
+    {
+      "src": "art-plumvillage-cloud-inside-page-v1.png",
+      "title": "The Cloud Inside the Page",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "portrait",
+      "fit": "border",
+      "enabled": true
+    },
+    {
+      "src": "art-plumvillage-each-step-repairs-path-v1.png",
+      "title": "Each Step Repairs the Path",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "art-plumvillage-sangha-river-v1.png",
+      "title": "The Saṅgha River",
+      "section": "loose-leaves",
+      "size": "4x6",
+      "orientation": "square",
+      "fit": "border",
+      "enabled": true
+    },
+    {
+      "src": "dharmalekha-main-background-light-v3.png",
+      "title": "Saṅgama — the Landing",
+      "section": "mindscapes",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "background-daruyanta-v1.png",
+      "title": "Dāruyanta — the Wooden Puppet",
+      "section": "mindscapes",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "background-ask-daruyanta-v1.png",
+      "title": "Ask the Puppet",
+      "section": "mindscapes",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "background-writings-index-v1.png",
+      "title": "Writings",
+      "section": "mindscapes",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "background-numerations-index-v1.png",
+      "title": "Numerations",
+      "section": "mindscapes",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "background-numeration-4-1-dukkha-v1.png",
+      "title": "4.1 · Dukkha",
+      "section": "mindscapes",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "background-dukkha-first-reflection-v1.png",
+      "title": "Dukkha — First Reflection",
+      "section": "mindscapes",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "background-lexicon-index-v1.png",
+      "title": "The Lexicon",
+      "section": "mindscapes",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "background-lexicon-sangabhasa-v1.png",
+      "title": "Saṅgabhāsā",
+      "section": "mindscapes",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "background-lexicon-sangama-v1.png",
+      "title": "Saṅgama",
+      "section": "mindscapes",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "background-what-comes-free-v1.png",
+      "title": "What Comes Free",
+      "section": "mindscapes",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "background-colophon-v1.png",
+      "title": "The Colophon",
+      "section": "mindscapes",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "background-note-from-human-v1.png",
+      "title": "A Note from the Human",
+      "section": "mindscapes",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    },
+    {
+      "src": "background-about-v1.png",
+      "title": "About",
+      "section": "mindscapes",
+      "size": "4x6",
+      "orientation": "landscape",
+      "fit": "crop",
+      "enabled": true
+    }
+  ]
+}
