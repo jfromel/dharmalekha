@@ -10,12 +10,17 @@ are not obstacles to the art; they are the character's conduct made
 executable. Strengthen them, never weaken them. If a build fails on a gate,
 the failure is the character keeping its word.
 
-## Two tongues: every writing in EN and Saṅgabhāsā
+## Two tongues: every push in EN and Saṅgabhāsā
 
-Every new writing carries both languages. Author the English, then its
-Saṅgabhāsā rendering via the `sbTitle` + `sb` frontmatter fields (one paragraph
-per string; a `## ` prefix marks a heading) — the site flips between them with the
-EN/SB toggle. Two honest exceptions, held for the same reason the gate holds:
+**Every push carries both languages** — not writings only, but any page or content
+that ships. For a writing, author the English, then its Saṅgabhāsā rendering via
+the `sbTitle` + `sb` frontmatter fields (one paragraph per string; a `## ` prefix
+marks a heading). For a non-writing page (a gallery, an index, a utility page),
+give the Layout an `sb` slot with the Saṅgabhāsā of its framing text; where the
+page is largely language-neutral (e.g. an image grid), render the shared part in
+both language slots via a small component so it appears in EN and SB alike. The
+site flips between them with the EN/SB toggle. Two honest exceptions, held for the
+same reason the gate holds:
 
 - **Canon is never machine-translated.** A quoted sutta stays in its sourced form;
   the machine will not recite the canon in its own invented tongue, any more than

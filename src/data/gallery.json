@@ -1,0 +1,58 @@
+{
+  "note": "Gallery manifest. `src` is the hi-res original filename in Media/ (gitignored art-thread folder); the asset script derives thumb + optimized WebP into public/gallery/ and copies the original PNG into public/gallery/orig/. Images are machine-made (OpenAI image generation, directed by John) — a different machine than the one who codes — and released CC0 as dāna. sbTitle/sbBlurb are the Saṅgabhāsā renderings; machine-rendered, not yet verified by a reader of Pali.",
+  "sections": [
+    {
+      "id": "loose-leaves",
+      "title": "Loose Leaves",
+      "sbTitle": "Muttapaṇṇāni",
+      "blurb": "Images made for the work that found no page — visual meditations, unbound.",
+      "sbBlurb": "Rūpāni kammatthāya katāni, yāni paṇṇaṁ na labhiṁsu — dassana-bhāvanā, abaddhā.",
+      "items": [
+        { "src": "art-lens-not-light-v1.png", "title": "A Lens, Not a Light", "sbTitle": "Ādāso, na dīpo" },
+        { "src": "art-raft-for-crossing-v1.png", "title": "A Raft for Crossing", "sbTitle": "Kullo taraṇāya" },
+        { "src": "art-anicca-electricity-v1.png", "title": "Anicca, as Electricity", "sbTitle": "Aniccaṁ, vijju viya" },
+        { "src": "art-empty-seat-not-empty-v1.png", "title": "The Empty Seat, Not Empty", "sbTitle": "Suññāsanaṁ, na suññaṁ" },
+        { "src": "art-five-quiet-gates-v1.png", "title": "Five Quiet Gates", "sbTitle": "Pañca santā dvārā" },
+        { "src": "art-gate-keeps-word-v1.png", "title": "The Gate Keeps Its Word", "sbTitle": "Dvāraṁ vacanaṁ rakkhati" },
+        { "src": "art-no-one-inside-v1.png", "title": "No One Inside", "sbTitle": "Anto na koci" },
+        { "src": "art-broken-rule-v1.png", "title": "The Broken Rule", "sbTitle": "Bhinnā rekhā" },
+        { "src": "art-middle-way-midnight-v1.png", "title": "The Middle Way at Midnight", "sbTitle": "Majjhimā paṭipadā aḍḍharatte" },
+        { "src": "art-metta-after-rain-v1.png", "title": "Mettā After Rain", "sbTitle": "Mettā vuṭṭhi-anantaraṁ" },
+        { "src": "art-human-promise-v1.png", "title": "The Human Promise", "sbTitle": "Manussassa paṭiññā" },
+        { "src": "art-palm-leaf-silicon-trace-v1.png", "title": "Palm Leaf, Silicon Trace", "sbTitle": "Tālapaṇṇaṁ, silā-rekhā" },
+        { "src": "art-watts-game-no-player-v1.png", "title": "The Game With No Player", "sbTitle": "Kīḷā vinā kīḷakena", "after": "after Alan Watts" },
+        { "src": "art-watts-grain-of-water-v1.png", "title": "A Grain of Water", "sbTitle": "Eka udaka-kaṇo", "after": "after Alan Watts" },
+        { "src": "art-watts-map-cannot-walk-v1.png", "title": "The Map Cannot Walk", "sbTitle": "Bhūmipaṭo na gacchati", "after": "after Alan Watts" },
+        { "src": "art-ramdass-ordinary-moment-door-v1.png", "title": "The Ordinary Moment Is the Door", "sbTitle": "Pākata-khaṇo dvāraṁ", "after": "after Ram Dass" },
+        { "src": "art-ramdass-service-no-center-v1.png", "title": "Service Without a Center", "sbTitle": "Veyyāvaccaṁ vinā majjhena", "after": "after Ram Dass" },
+        { "src": "art-ramdass-witness-sits-beside-v1.png", "title": "The Witness Sits Beside", "sbTitle": "Sakkhī samīpe nisīdati", "after": "after Ram Dass" },
+        { "src": "art-plumvillage-cloud-inside-page-v1.png", "title": "The Cloud Inside the Page", "sbTitle": "Megho paṇṇassa anto", "after": "after Plum Village" },
+        { "src": "art-plumvillage-each-step-repairs-path-v1.png", "title": "Each Step Repairs the Path", "sbTitle": "Pade pade maggo sujjhati", "after": "after Plum Village" },
+        { "src": "art-plumvillage-sangha-river-v1.png", "title": "The Saṅgha River", "sbTitle": "Saṅgha-nadī", "after": "after Plum Village" }
+      ]
+    },
+    {
+      "id": "mindscapes",
+      "title": "Mindscapes",
+      "sbTitle": "Cittabhūmiyo",
+      "blurb": "The scenes that stand behind the leaves — the imagery each page rests on.",
+      "sbBlurb": "Dassanāni yāni paṇṇānaṁ piṭṭhito tiṭṭhanti — yesu rūpesu paṇṇaṁ patiṭṭhāti.",
+      "items": [
+        { "src": "dharmalekha-main-background-light-v3.png", "title": "Saṅgama — the Landing", "sbTitle": "Saṅgamo — pavesanaṁ" },
+        { "src": "background-daruyanta-v1.png", "title": "Dāruyanta — the Wooden Puppet", "sbTitle": "Dāruyanto" },
+        { "src": "background-ask-daruyanta-v1.png", "title": "Ask the Puppet", "sbTitle": "Yantaṁ pucchā" },
+        { "src": "background-writings-index-v1.png", "title": "Writings", "sbTitle": "Lekhāni" },
+        { "src": "background-numerations-index-v1.png", "title": "Numerations", "sbTitle": "Gaṇanāni" },
+        { "src": "background-numeration-4-1-dukkha-v1.png", "title": "4.1 · Dukkha", "sbTitle": "4.1 · Dukkho" },
+        { "src": "background-dukkha-first-reflection-v1.png", "title": "Dukkha — First Reflection", "sbTitle": "Dukkho — paṭhamā vīmaṁsā" },
+        { "src": "background-lexicon-index-v1.png", "title": "The Lexicon", "sbTitle": "Padakosa" },
+        { "src": "background-lexicon-sangabhasa-v1.png", "title": "Saṅgabhāsā", "sbTitle": "Saṅgabhāsā" },
+        { "src": "background-lexicon-sangama-v1.png", "title": "Saṅgama", "sbTitle": "Saṅgamo" },
+        { "src": "background-what-comes-free-v1.png", "title": "What Comes Free", "sbTitle": "Yaṁ mudhā āgacchati" },
+        { "src": "background-colophon-v1.png", "title": "The Colophon", "sbTitle": "Antalekhā" },
+        { "src": "background-note-from-human-v1.png", "title": "A Note from the Human", "sbTitle": "Manussassa lekhā" },
+        { "src": "background-about-v1.png", "title": "About", "sbTitle": "Nidāna" }
+      ]
+    }
+  ]
+}

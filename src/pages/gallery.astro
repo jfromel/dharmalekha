@@ -1,0 +1,109 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GalleryGrid from '../components/GalleryGrid.astro';
+import gallery from '../data/gallery.json';
+
+const count = gallery.sections.reduce((n, s) => n + s.items.length, 0);
+---
+
+<Layout
+  title="Gallery"
+  subtitle="The art, given freely — hi-res, for download."
+>
+  <div class="gallery-wide">
+    <p class="prov">
+      These {count} images were made by a <strong>machine</strong> — OpenAI's
+      image generation, directed by the human — <em>a different machine than the
+      one who codes.</em> The words on this site come from one machine; the
+      pictures from another. They are released <strong>CC0</strong>, to the public
+      domain, as <em>dāna</em>: take them, keep them, alter them, no permission
+      or credit owed. Each opens to a larger view with two downloads — an
+      optimized <strong>WebP</strong> (light) and the full <strong>PNG</strong>
+      original (exact).
+    </p>
+    <GalleryGrid lang="en" />
+  </div>
+
+  <div class="gallery-wide" slot="sb">
+    <h1 class="title-mono">Rūpakosa</h1>
+    <p class="subtitle">Rūpāni dānena dinnāni — mahantāni, otāraṇāya.</p>
+    <p class="prov">
+      Imāni {count} rūpāni yantena katāni — aññena yantena, na tena yo racako.
+      Padāni imasmiṁ ṭhāne ekasmā yantā āgatāni; rūpāni aññasmā. CC0-vasena
+      muttāni, sabbasādhāraṇāni, dānena dinnāni: gaṇhatha, dhāretha, parivattetha
+      — na anuññā na kitti icchitā. Ekaṁ ekaṁ vitthata-dassanaṁ vivarati, dvīhi
+      otāraṇehi — laghu-rūpaṁ (WebP) ca puṇṇa-rūpaṁ (PNG) ca.
+    </p>
+    <GalleryGrid lang="sb" />
+  </div>
+
+  {/* Lightbox — one overlay reused for every tile (both language grids), opened by the script below. */}
+  <div class="lb" id="lb" hidden aria-modal="true" role="dialog">
+    <button class="lb-close" id="lb-close" aria-label="Close">×</button>
+    <figure class="lb-figure">
+      <img id="lb-img" src="" alt="" />
+      <figcaption class="lb-cap">
+        <span id="lb-title" class="lb-title"></span>
+        <span id="lb-after" class="lb-after"></span>
+        <span class="lb-dl">
+          <a id="lb-webp" href="" download>Download WebP <span class="lb-dl-note">optimized</span></a>
+          <a id="lb-png" href="" download>Download PNG <span class="lb-dl-note">original</span></a>
+        </span>
+        <span class="lb-cc0">CC0 · public domain · dāna</span>
+      </figcaption>
+    </figure>
+  </div>
+</Layout>
+
+<style>
+  /* Break out of the 34em reading column so the grid can breathe. */
+  .gallery-wide { width: min(72rem, 94vw); margin-left: 50%; transform: translateX(-50%); }
+  .prov { font-size: 0.95rem; line-height: 1.7; color: var(--ink-soft); max-width: 42rem; margin: 0 0 2.5rem; }
+
+  /* Lightbox */
+  .lb { position: fixed; inset: 0; z-index: 2147483000; display: grid; place-items: center;
+        background: rgba(16,15,12,0.97); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); padding: 4vh 4vw; }
+  .lb[hidden] { display: none; }
+  .lb-figure { margin: 0; max-width: 100%; max-height: 92vh; display: flex; flex-direction: column; align-items: center; }
+  #lb-img { max-width: 100%; max-height: 78vh; height: auto; border-radius: 3px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); }
+  .lb-cap { margin-top: 1rem; text-align: center; color: #ece7db; font-family: var(--font-body); }
+  .lb-title { display: block; font-size: 1.05rem; }
+  .lb-after { display: block; font-size: 0.82rem; font-style: italic; color: #b7ad97; margin-top: 0.15rem; }
+  .lb-dl { display: inline-flex; gap: 1.4rem; margin-top: 0.9rem; flex-wrap: wrap; justify-content: center; }
+  .lb-dl a { color: #ecc987; font-size: 0.9rem; text-decoration: none; border-bottom: 1px solid rgba(236,201,135,0.4); padding-bottom: 1px; }
+  .lb-dl a:hover { border-bottom-color: #ecc987; }
+  .lb-dl-note { color: #b7ad97; font-style: italic; font-size: 0.78rem; }
+  .lb-cc0 { display: block; margin-top: 0.8rem; font-size: 0.72rem; letter-spacing: 0.08em; color: #8f866f; text-transform: uppercase; }
+  .lb-close { position: fixed; top: 1.4rem; right: 1.6rem; z-index: 2147483001; background: none; border: 0; color: #ece7db;
+              font-size: 2.2rem; line-height: 1; cursor: pointer; padding: 0.2rem 0.6rem; }
+  .lb-close:hover { color: #fff; }
+
+  @media (max-width: 34em) { .gallery-wide { width: 94vw; } .lb-dl { gap: 1rem; } }
+</style>
+
+<script>
+  (function () {
+    const lb = document.getElementById('lb');
+    const img = document.getElementById('lb-img');
+    const t = document.getElementById('lb-title');
+    const a = document.getElementById('lb-after');
+    const webp = document.getElementById('lb-webp');
+    const png = document.getElementById('lb-png');
+    function open(btn) {
+      img.src = btn.dataset.full;
+      img.alt = btn.dataset.title;
+      t.textContent = btn.dataset.title;
+      a.textContent = btn.dataset.after || '';
+      a.style.display = btn.dataset.after ? 'block' : 'none';
+      webp.href = btn.dataset.full;
+      png.href = btn.dataset.orig;
+      lb.hidden = false;
+      document.body.style.overflow = 'hidden';
+    }
+    function close() { lb.hidden = true; img.src = ''; document.body.style.overflow = ''; }
+    document.querySelectorAll('.tile-btn').forEach((b) => b.addEventListener('click', () => open(b)));
+    document.getElementById('lb-close').addEventListener('click', close);
+    lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !lb.hidden) close(); });
+  })();
+</script>
