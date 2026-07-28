@@ -74,9 +74,11 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
       // default is always dassana; ābhāsa is only ever entered on purpose.
       try {
         var m = localStorage.getItem('mindscape');
-        if (m === 'abhasa' || m === 'dassana') {
+        if (m === 'abhasa' || m === 'dassana' || m === 'yanta') {
           document.documentElement.setAttribute('data-mindscape', m);
         }
+        var lo = localStorage.getItem('mindscape:lotus');
+        document.documentElement.setAttribute('data-lotus', lo === 'lotus' ? 'lotus' : 'mud');
       } catch (e) {}
     </script>
   </head>
@@ -92,15 +94,20 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
         ))}
       </nav>
 
-      {/* The mindscape toggle, riding the top of the banner, always visible.
-          Default Dassana. Before the appearance is unlocked (by the box at the
-          foot of the Ābhāsa & Dassana post), pressing it does not switch — it
-          carries the reader to that post, still in Dassana. Once unlocked, it
-          flips the two modes freely, no redirect. */}
-      <button class="mindscape-chip" type="button" aria-live="polite">
-        <span class="glyph" aria-hidden="true">◐</span>
-        <span class="label">Dassana</span>
-      </button>
+      {/* The mindscape controls, riding the top of the banner. Three appearances
+          as a little cosmology — two half-moons facing away, the middle way (☯)
+          between them — and, only in Yantadassana, the Mud/Lotus day-night. */}
+      <div class="mindscape-controls">
+        <span class="mindscape-modes" role="group" aria-label="Appearance">
+          <button class="mm" type="button" data-appear="dassana" title="Dassana — the seeing (the plain words)" aria-label="Dassana — the seeing">◐</button>
+          <button class="mm" type="button" data-appear="yanta" title="Yantadassana — the middle way (the machine's seeing)" aria-label="Yantadassana — the middle way">☯</button>
+          <button class="mm" type="button" data-appear="abhasa" title="Ābhāsa — the appearance (the luminous)" aria-label="Ābhāsa — the appearance">◑</button>
+        </span>
+        <span class="mindscape-lotus" role="group" aria-label="Mud or Lotus">
+          <button class="ml" type="button" data-lotus="mud" aria-label="Mud — the machine's night">MUD</button>
+          <button class="ml" type="button" data-lotus="lotus" aria-label="Lotus — the machine's day">LOTUS</button>
+        </span>
+      </div>
     </header>
 
     <main>
@@ -126,86 +133,71 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
     <script is:inline>
       (function () {
         var root = document.documentElement;
-        var LABELS = { abhasa: 'Ābhāsa', dassana: 'Dassana' };
-        function current() { return root.getAttribute('data-mindscape') || 'dassana'; }
-        function paintChip() {
-          var chip = document.querySelector('.mindscape-chip');
-          if (!chip) return;
-          var lbl = chip.querySelector('.label');
-          if (lbl) lbl.textContent = LABELS[current()];
-          var other = current() === 'abhasa' ? LABELS.dassana : LABELS.abhasa;
-          chip.setAttribute('title', 'Switch to ' + other);
-          chip.setAttribute('aria-label', 'Currently ' + LABELS[current()] + '. Switch to ' + other + '.');
+        function appear() { return root.getAttribute('data-mindscape') || 'dassana'; }
+        function lotus() { return root.getAttribute('data-lotus') || 'mud'; }
+        function lit(a) { return a === 'abhasa' || a === 'yanta'; }
+        function light() {
+          // Reveal the appearance one paint after the mode is set, so opacity
+          // transitions (fades) rather than snapping.
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () { root.classList.add('mindscape-lit'); });
+          });
+        }
+        function paintControls() {
+          document.querySelectorAll('.mm').forEach(function (b) {
+            b.setAttribute('aria-pressed', b.getAttribute('data-appear') === appear() ? 'true' : 'false');
+          });
+          document.querySelectorAll('.ml').forEach(function (b) {
+            b.setAttribute('aria-pressed', b.getAttribute('data-lotus') === lotus() ? 'true' : 'false');
+          });
         }
         function paintBox() {
           var box = document.querySelector('.mindscape-box');
           if (!box) return;
           var note = box.querySelector('.mindscape-box__note');
           var act = box.querySelector('.mindscape-box__act');
-          if (current() === 'abhasa') {
+          var a = appear();
+          if (a === 'abhasa') {
             if (note) note.textContent = 'Ābhāsa — the appearance. Imagery AI-generated; decorative, not canon. The words are unchanged.';
-            if (act) act.textContent = 'Shift to Dassana ›';
-            box.setAttribute('aria-label', 'Ābhāsa, the appearance. Shift to Dassana — the plain words — if the reading is hard.');
+            if (act) act.textContent = 'Back to the plain seeing ›';
+            box.setAttribute('aria-label', 'Ābhāsa, the appearance. Back to Dassana, the plain words.');
+          } else if (a === 'yanta') {
+            if (note) note.textContent = "Yantadassana — the machine's seeing. Monochrome; imagery ghosted, AI-generated, not canon. Mud is its night, Lotus its day.";
+            if (act) act.textContent = 'Back to the plain seeing ›';
+            box.setAttribute('aria-label', "Yantadassana, the machine's seeing. Back to Dassana, the plain words.");
           } else {
             if (note) note.textContent = 'Dassana — the seeing. The words, plain and unadorned.';
-            if (act) act.textContent = 'Enter Ābhāsa ›';
-            box.setAttribute('aria-label', 'Dassana, the plain words. Enter Ābhāsa — the appearance.');
+            if (act) act.textContent = '';
+            box.setAttribute('aria-label', 'Dassana, the plain words.');
           }
         }
-        function light() {
-          // Add the visible appearance one paint after the mode is set, so the
-          // opacity change transitions (fades) instead of applying instantly.
-          requestAnimationFrame(function () {
-            requestAnimationFrame(function () { root.classList.add('mindscape-lit'); });
-          });
+        function applyAppear(a) {
+          root.setAttribute('data-mindscape', a);
+          try { localStorage.setItem('mindscape', a); } catch (e) {}
+          if (lit(a)) light(); else root.classList.remove('mindscape-lit');
+          paintControls(); paintBox();
         }
-        function apply(mode) {
-          root.setAttribute('data-mindscape', mode);
-          try { localStorage.setItem('mindscape', mode); } catch (e) {}
-          if (mode === 'abhasa') light();
-          else root.classList.remove('mindscape-lit');
-          paintChip();
-          paintBox();
+        function applyLotus(l) {
+          root.setAttribute('data-lotus', l);
+          try { localStorage.setItem('mindscape:lotus', l); } catch (e) {}
+          paintControls();
         }
-        // The post that exposes the appearance and explains it.
-        var POST_URL = '/writings/abhasa-dassana/';
-        function unlocked() {
-          try { return localStorage.getItem('mindscape:unlocked') === '1'; } catch (e) { return false; }
-        }
-        function markUnlocked() {
-          try { localStorage.setItem('mindscape:unlocked', '1'); } catch (e) {}
-        }
-        window.__mindscape = {
-          // enter(): the box at the foot of the post — the ONLY thing that
-          // exposes ābhāsa. It turns the appearance on and unlocks the banner
-          // toggle for free switching thereafter.
-          enter: function () { markUnlocked(); apply('abhasa'); },
-          // toggle(): the banner chip AND the persistent bottom box. Ābhāsa ->
-          // Dassana always (the readability shift, no gate). Dassana -> Ābhāsa
-          // is free once unlocked; before that it carries the reader to the
-          // post to read it — unless already on the post, where it unlocks.
-          toggle: function () {
-            if (current() === 'abhasa') { apply('dassana'); return; }
-            if (unlocked()) { apply('abhasa'); return; }
-            var onPost = location.pathname.replace(/\/+$/, '') === POST_URL.replace(/\/+$/, '');
-            if (onPost) { markUnlocked(); apply('abhasa'); }
-            else { window.location.href = POST_URL; }
-          },
-        };
+        document.querySelectorAll('.mm').forEach(function (b) {
+          b.addEventListener('click', function () { applyAppear(b.getAttribute('data-appear')); });
+        });
+        document.querySelectorAll('.ml').forEach(function (b) {
+          b.addEventListener('click', function () { applyLotus(b.getAttribute('data-lotus')); });
+        });
+        // The disclosure box shifts back to the plain seeing.
+        var box = document.querySelector('.mindscape-box');
+        if (box) box.addEventListener('click', function () { if (appear() !== 'dassana') applyAppear('dassana'); });
+        // Kept for the Ābhāsa & Dassana post's in-page button.
         document.addEventListener('click', function (e) {
           var t = e.target.closest && e.target.closest('[data-mindscape-enter]');
-          if (t) { e.preventDefault(); window.__mindscape.enter(); }
+          if (t) { e.preventDefault(); applyAppear('abhasa'); }
         });
-        var chip = document.querySelector('.mindscape-chip');
-        if (chip) chip.addEventListener('click', function () { window.__mindscape.toggle(); });
-        var box = document.querySelector('.mindscape-box');
-        if (box) box.addEventListener('click', function () { window.__mindscape.toggle(); });
-        // On load / navigation: if we arrive already in ābhāsa (the head script
-        // set the mode before paint, to avoid a chrome flash), light it a paint
-        // later so the appearance fades in rather than snapping.
-        if (current() === 'abhasa') light();
-        paintChip();
-        paintBox();
+        if (lit(appear())) light();
+        paintControls(); paintBox();
       })();
     </script>
 
@@ -275,6 +267,8 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
         font-size: 1.0625rem;
         line-height: 1.7;
         -webkit-font-smoothing: antialiased;
+        /* The meditative fade — mud dissolving to lotus, and every mode change. */
+        transition: background 1.5s ease, color 1.5s ease;
       }
 
       .folio {
@@ -399,7 +393,7 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
         inset: 0;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 1s ease;
+        transition: opacity 1.5s ease;
       }
       body::before {
         z-index: -2;
@@ -429,7 +423,7 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
 
       /* The reading field drops to --dassana; the words keep a soft halo rather
          than a slab, so dassana can recede this far without dissolving. */
-      main { transition: background 1s ease; }
+      main { transition: background 1.5s ease, color 1.5s ease; }
       /* Clear text over a clear image: no panel, no blur. Each glyph carries a
          tight light keyline so a single ink colour reads over the sharp
          appearance — the image stays fully detailed behind it. (--dassana adds
@@ -496,28 +490,79 @@ const bgKey = MINDSCAPE_BG[path.replace(/\/+$/, '')] ?? 'main';
         border-bottom-color: #fff;
       }
 
-      /* The mindscape toggle — always present, riding the top of the banner. */
-      .mindscape-chip {
+      /* ——— Yantadassana: the machine's monochrome seeing ———
+         The per-page image greyscaled and ghosted over a flat machine ground.
+         Mud is its night (dark, light text); Lotus its day (light, dark ink). */
+      html[data-mindscape='yanta'] body { background: #0d0e0c; color: #cbc8bd; }
+      html[data-mindscape='yanta'][data-lotus='lotus'] body { background: #e9e7df; color: #26251f; }
+      html[data-mindscape='yanta'] body::before {
+        background-image: var(--luminous-bg);
+        filter: grayscale(1) contrast(1.06) brightness(1.06);
+      }
+      html[data-mindscape='yanta'][data-lotus='lotus'] body::before { filter: grayscale(1) contrast(1.1) brightness(0.9); }
+      html[data-mindscape='yanta'].mindscape-lit body::before { opacity: 0.30; }
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit body::before { opacity: 0.20; }
+      html[data-mindscape='yanta'] body::after { background: transparent; }
+      /* Mud reuses the light-over-image treatment below; Lotus inverts it to
+         dark ink on the pale ground. */
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit main,
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit main :is(h1,h2,h3,h4,p,li,blockquote,strong,em,span,dt,dd,figcaption,label),
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit main .canonical .body,
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit main .reflection .body {
+        color: #26251f; text-shadow: none;
+      }
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit main :is(.subtitle,.meta,.gloss,.lang,.fineprint,.notice,.sources li,.weave li,figcaption) { color: #6a685e; }
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit main a { color: #8a6a34; }
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit main .entry a { color: #26251f; }
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit footer { color: #6a685e; text-shadow: none; }
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit footer a { color: #8a6a34; }
+      /* The masthead in yanta: greyscaled; light scrim for lotus. */
+      html[data-mindscape='yanta'].mindscape-lit .folio { filter: grayscale(1); }
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit .folio {
+        background-image: linear-gradient(rgba(233,231,223,0.62), rgba(233,231,223,0.76)), var(--luminous-banner);
+      }
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit .wordmark { color: #26251f; text-shadow: none; }
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit .gloss,
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit .rail a { color: #6a685e; text-shadow: none; }
+      html[data-mindscape='yanta'][data-lotus='lotus'].mindscape-lit .rail a[aria-current='page'] { color: #26251f; border-bottom-color: #6a685e; }
+
+      /* The mindscape controls — appearance (◐ ☯ ◑) and, in Yantadassana only,
+         Mud/Lotus. Chrome carries its own leaf ground so it reads over any
+         banner, stark or lit, light or dark. */
+      .mindscape-controls {
         position: absolute;
         top: 0.6rem;
         right: 0.9rem;
         z-index: 16;
-        display: inline-flex;
-        align-items: center;
+        display: flex;
         gap: 0.4rem;
+        align-items: center;
         font-family: var(--font-mono);
-        font-size: 0.7rem;
-        letter-spacing: 0.08em;
-        color: var(--brass);
-        background: rgba(230, 220, 195, 0.9);
+      }
+      .mindscape-modes, .mindscape-lotus {
+        display: inline-flex;
         border: 1px solid var(--brass);
-        padding: 0.35rem 0.6rem;
+        background: rgba(230, 220, 195, 0.92);
         border-radius: 1px;
-        cursor: pointer;
+        overflow: hidden;
         backdrop-filter: blur(2px);
       }
-      .mindscape-chip .glyph { font-size: 0.85rem; line-height: 1; }
-      .mindscape-chip:hover { background: var(--leaf-deep); }
+      .mm, .ml {
+        font: inherit;
+        background: none;
+        border: 0;
+        border-right: 1px solid var(--brass);
+        color: var(--ink-soft);
+        cursor: pointer;
+        line-height: 1;
+      }
+      .mm:last-child, .ml:last-child { border-right: 0; }
+      .mm { font-size: 0.9rem; padding: 0.26rem 0.5rem; }
+      .ml { font-size: 0.56rem; letter-spacing: 0.1em; padding: 0.32rem 0.5rem; }
+      .mm[aria-pressed='true'], .ml[aria-pressed='true'] { color: var(--brass); background: var(--leaf-deep); }
+      .mm:hover, .ml:hover { color: var(--brass); }
+      .mindscape-lotus { display: none; }
+      html[data-mindscape='yanta'] .mindscape-lotus { display: inline-flex; }
 
       /* The persistent mindscape box — bottom-left, present in both modes, its
          own leaf ground so it reads over stark or over the appearance. */

@@ -1,11 +1,13 @@
 :root {
-  /* ola leaf rubbing — ground, ink, and the brass of a stylus-cut rule */
-  --leaf: #e6dcc3;
-  --leaf-deep: #d9cdae;
-  --ink: #2b2118;
-  --ink-soft: #5c4f3d;
-  --ink-faint: #9a8c72;
-  --brass: #8a6a2f;
+  /* ola leaf, lifted — the tan raised to a cleaner, calmer warm paper (less
+     chroma, higher value), so Dassana reads as the daylight page, not a heavy
+     brown. This is the site's default face. */
+  --leaf: #ece7db;
+  --leaf-deep: #ded7c4;
+  --ink: #2c2620;
+  --ink-soft: #675d4d;
+  --ink-faint: #a79d86;
+  --brass: #8a6a34;
 
   --rail-gap: 1.25rem;
 
