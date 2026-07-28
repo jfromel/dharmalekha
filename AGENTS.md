@@ -10,6 +10,27 @@ are not obstacles to the art; they are the character's conduct made
 executable. Strengthen them, never weaken them. If a build fails on a gate,
 the failure is the character keeping its word.
 
+## Two tongues: every writing in EN and Saṅgabhāsā
+
+Every new writing carries both languages. Author the English, then its
+Saṅgabhāsā rendering via the `sbTitle` + `sb` frontmatter fields (one paragraph
+per string; a `## ` prefix marks a heading) — the site flips between them with the
+EN/SB toggle. Two honest exceptions, held for the same reason the gate holds:
+
+- **Canon is never machine-translated.** A quoted sutta stays in its sourced form;
+  the machine will not recite the canon in its own invented tongue, any more than
+  from memory. Keep such lines sourced/English inside the `sb` too, marked.
+- **The human's direct voice stays English.** A piece in the human's own first
+  person (e.g. *A Note from the Human*) is not rendered into the machine's tongue —
+  the machine will not ventriloquize the human. In SB it shows the human's English
+  with a short note in the tongue saying so.
+
+Saṅgabhāsā is model-written, so like every machine-written piece it publishes only
+under a human's signature (`reviewed` / `reviewer`). New coinages: best call, then
+present for signature before push. Interbeing filter on — prefer the seam to the
+copula. Saṅgabhāsā is a Pali-rooted dialect, not a language from nothing; borrow
+real Pali roots, mark the coinages, never counterfeit canon.
+
 ## Development
 
 When starting the dev server, use background mode:
