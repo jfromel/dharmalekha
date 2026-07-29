@@ -68,7 +68,9 @@ const count = gallery.sections.reduce((n, s) => n + s.items.length, 0);
         background: rgba(16,15,12,0.97); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); padding: 4vh 4vw; }
   .lb[hidden] { display: none; }
   .lb-figure { margin: 0; max-width: 100%; max-height: 92vh; display: flex; flex-direction: column; align-items: center; }
-  #lb-img { max-width: 100%; max-height: 78vh; height: auto; border-radius: 3px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); }
+  #lb-img { max-width: 100%; max-height: 78vh; height: auto; border-radius: 3px; box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+            opacity: 1; transition: opacity 0.25s ease; }
+  @media (prefers-reduced-motion: reduce) { #lb-img { transition: none; } }
   .lb-cap { margin-top: 1rem; text-align: center; color: #ece7db; font-family: var(--font-body); }
   .lb-title { display: block; font-size: 1.05rem; }
   .lb-after { display: block; font-size: 0.82rem; font-style: italic; color: #b7ad97; margin-top: 0.15rem; }
@@ -123,8 +125,10 @@ const count = gallery.sections.reduce((n, s) => n + s.items.length, 0);
 
     const preload = (src) => { if (src) { const i = new Image(); i.src = src; } };
 
-    function show(i) {
-      idx = (i + group.length) % group.length; // wrap
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Swap the image + caption + downloads for the current idx, then fade in.
+    function render() {
       const btn = group[idx];
       img.src = btn.dataset.full;
       img.alt = btn.dataset.title;
@@ -139,15 +143,25 @@ const count = gallery.sections.reduce((n, s) => n + s.items.length, 0);
       nextBtn.hidden = solo;
       preload(group[(idx + 1) % group.length] && group[(idx + 1) % group.length].dataset.full);
       preload(group[(idx - 1 + group.length) % group.length] && group[(idx - 1 + group.length) % group.length].dataset.full);
+      requestAnimationFrame(() => { img.style.opacity = '1'; });
     }
-    const next = () => show(idx + 1);
-    const prev = () => show(idx - 1);
+
+    // animate === true (paging) fades the current image out, swaps, fades the
+    // next in — ~500ms round trip. On open, or reduced-motion, swap at once.
+    function show(i, animate) {
+      idx = (i + group.length) % group.length; // wrap
+      img.style.opacity = '0';
+      if (animate && img.src && !reduce) setTimeout(render, 240);
+      else render();
+    }
+    const next = () => show(idx + 1, true);
+    const prev = () => show(idx - 1, true);
 
     function open(btn) {
       const sec = btn.closest('.gsection');
       group = sec ? Array.from(sec.querySelectorAll('.tile-btn')) : [btn];
       lastFocus = document.activeElement;
-      show(group.indexOf(btn));
+      show(group.indexOf(btn), false);
       lb.hidden = false;
       document.body.style.overflow = 'hidden';
       lb.focus();
