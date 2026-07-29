@@ -109,6 +109,12 @@ const count = gallery.sections.reduce((n, s) => n + s.items.length, 0);
     const prevBtn = document.getElementById('lb-prev');
     const nextBtn = document.getElementById('lb-next');
 
+    // The overlay is authored inside the EN language slot (.lang-en), which the
+    // language toggle hides (display:none) in SB mode — taking the lightbox with
+    // it. Move it out to <body> so it's shared across both languages. It's a
+    // position:fixed overlay, so relocating it changes nothing but its ancestor.
+    if (lb.parentElement !== document.body) document.body.appendChild(lb);
+
     // The set is the clicked tile's section (Loose Leaves or Mindscapes, in the
     // visible language); prev/next wrap within it.
     let group = [];
