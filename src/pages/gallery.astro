@@ -143,7 +143,10 @@ const count = gallery.sections.reduce((n, s) => n + s.items.length, 0);
       nextBtn.hidden = solo;
       preload(group[(idx + 1) % group.length] && group[(idx + 1) % group.length].dataset.full);
       preload(group[(idx - 1 + group.length) % group.length] && group[(idx - 1 + group.length) % group.length].dataset.full);
-      requestAnimationFrame(() => { img.style.opacity = '1'; });
+      // Force a reflow so the 0 -> 1 opacity actually transitions (more reliable
+      // than requestAnimationFrame, which some contexts throttle).
+      void img.offsetWidth;
+      img.style.opacity = '1';
     }
 
     // animate === true (paging) fades the current image out, swaps, fades the
