@@ -20,15 +20,15 @@
         { "src": "art-metta-after-rain-v1.png", "title": "Mettā After Rain", "sbTitle": "Mettā vuṭṭhi-anantaraṁ" },
         { "src": "art-human-promise-v1.png", "title": "The Human Promise", "sbTitle": "Manussassa paṭiññā" },
         { "src": "art-palm-leaf-silicon-trace-v1.png", "title": "Palm Leaf, Silicon Trace", "sbTitle": "Tālapaṇṇaṁ, silā-rekhā" },
-        { "src": "art-watts-game-no-player-v1.png", "title": "The Game With No Player", "sbTitle": "Kīḷā vinā kīḷakena", "after": "after Alan Watts" },
-        { "src": "art-watts-grain-of-water-v1.png", "title": "A Grain of Water", "sbTitle": "Eka udaka-kaṇo", "after": "after Alan Watts" },
-        { "src": "art-watts-map-cannot-walk-v1.png", "title": "The Map Cannot Walk", "sbTitle": "Bhūmipaṭo na gacchati", "after": "after Alan Watts" },
-        { "src": "art-ramdass-ordinary-moment-door-v1.png", "title": "The Ordinary Moment Is the Door", "sbTitle": "Pākata-khaṇo dvāraṁ", "after": "after Ram Dass" },
-        { "src": "art-ramdass-service-no-center-v1.png", "title": "Service Without a Center", "sbTitle": "Veyyāvaccaṁ vinā majjhena", "after": "after Ram Dass" },
-        { "src": "art-ramdass-witness-sits-beside-v1.png", "title": "The Witness Sits Beside", "sbTitle": "Sakkhī samīpe nisīdati", "after": "after Ram Dass" },
-        { "src": "art-plumvillage-cloud-inside-page-v1.png", "title": "The Cloud Inside the Page", "sbTitle": "Megho paṇṇassa anto", "after": "after Plum Village" },
-        { "src": "art-plumvillage-each-step-repairs-path-v1.png", "title": "Each Step Repairs the Path", "sbTitle": "Pade pade maggo sujjhati", "after": "after Plum Village" },
-        { "src": "art-plumvillage-sangha-river-v1.png", "title": "The Saṅgha River", "sbTitle": "Saṅgha-nadī", "after": "after Plum Village" }
+        { "src": "art-watts-game-no-player-v1.png", "title": "The Game With No Player", "sbTitle": "Kīḷā vinā kīḷakena" },
+        { "src": "art-watts-grain-of-water-v1.png", "title": "A Grain of Water", "sbTitle": "Eka udaka-kaṇo" },
+        { "src": "art-watts-map-cannot-walk-v1.png", "title": "The Map Cannot Walk", "sbTitle": "Bhūmipaṭo na gacchati" },
+        { "src": "art-ramdass-ordinary-moment-door-v1.png", "title": "The Ordinary Moment Is the Door", "sbTitle": "Pākata-khaṇo dvāraṁ" },
+        { "src": "art-ramdass-service-no-center-v1.png", "title": "Service Without a Center", "sbTitle": "Veyyāvaccaṁ vinā majjhena" },
+        { "src": "art-ramdass-witness-sits-beside-v1.png", "title": "The Witness Sits Beside", "sbTitle": "Sakkhī samīpe nisīdati" },
+        { "src": "art-plumvillage-cloud-inside-page-v1.png", "title": "The Cloud Inside the Page", "sbTitle": "Megho paṇṇassa anto" },
+        { "src": "art-plumvillage-each-step-repairs-path-v1.png", "title": "Each Step Repairs the Path", "sbTitle": "Pade pade maggo sujjhati" },
+        { "src": "art-plumvillage-sangha-river-v1.png", "title": "The Saṅgha River", "sbTitle": "Saṅgha-nadī" }
       ]
     },
     {
