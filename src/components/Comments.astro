@@ -53,6 +53,9 @@ const FORM_ENDPOINT = 'https://formspree.io/f/xbdnqddd';
   form.cbox { display: flex; flex-direction: column; gap: 0.55rem; margin: 0 0 1rem; }
   form.cbox .row { display: flex; gap: 1rem; flex-wrap: wrap; }
   form.cbox .row > div { flex: 1 1 12rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  /* Labels differ in height (the NAME hint wraps to two lines); drop the inputs
+     to the bottom of each column so the two fields align regardless. */
+  form.cbox .row > div input { margin-top: auto; }
   form.cbox label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-soft); }
   form.cbox label span { text-transform: none; letter-spacing: 0; color: var(--ink-faint); }
   form.cbox textarea, form.cbox input[type='text'], form.cbox input[type='email'] {

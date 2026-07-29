@@ -79,6 +79,8 @@ const FORM_ENDPOINT = 'https://formspree.io/f/xbdnqddd';
   form.ask label span { text-transform: none; letter-spacing: 0; color: var(--ink-faint); }
   form.ask .row { display: flex; gap: 1rem; flex-wrap: wrap; }
   form.ask .row > div { flex: 1 1 12rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  /* Align the fields even when the NAME hint wraps to two lines. */
+  form.ask .row > div input:not(.hp) { margin-top: auto; }
   form.ask textarea, form.ask input[type='text']:not(.hp), form.ask input[type='email'] {
     width: 100%; font: inherit; padding: 0.6rem 0.7rem;
     background: var(--leaf-deep); color: var(--ink);
