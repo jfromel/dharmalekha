@@ -38,13 +38,16 @@ const count = gallery.sections.reduce((n, s) => n + s.items.length, 0);
   </div>
 
   {/* Lightbox — one overlay reused for every tile (both language grids), opened by the script below. */}
-  <div class="lb" id="lb" hidden aria-modal="true" role="dialog">
-    <button class="lb-close" id="lb-close" aria-label="Close">×</button>
+  <div class="lb" id="lb" hidden aria-modal="true" role="dialog" aria-label="Image viewer" tabindex="-1">
+    <button class="lb-close" id="lb-close" type="button" aria-label="Close">×</button>
+    <button class="lb-nav lb-prev" id="lb-prev" type="button" aria-label="Previous image">‹</button>
+    <button class="lb-nav lb-next" id="lb-next" type="button" aria-label="Next image">›</button>
     <figure class="lb-figure">
       <img id="lb-img" src="" alt="" />
       <figcaption class="lb-cap">
         <span id="lb-title" class="lb-title"></span>
         <span id="lb-after" class="lb-after"></span>
+        <span id="lb-count" class="lb-count"></span>
         <span class="lb-dl">
           <a id="lb-webp" href="" download>Download WebP <span class="lb-dl-note">optimized</span></a>
           <a id="lb-png" href="" download>Download PNG <span class="lb-dl-note">original</span></a>
@@ -77,8 +80,21 @@ const count = gallery.sections.reduce((n, s) => n + s.items.length, 0);
   .lb-close { position: fixed; top: 1.4rem; right: 1.6rem; z-index: 2147483001; background: none; border: 0; color: #ece7db;
               font-size: 2.2rem; line-height: 1; cursor: pointer; padding: 0.2rem 0.6rem; }
   .lb-close:hover { color: #fff; }
+  .lb-nav { position: fixed; top: 50%; transform: translateY(-50%); z-index: 2147483001;
+            background: none; border: 0; color: #ece7db; font-size: 3rem; line-height: 1;
+            cursor: pointer; padding: 0.4rem 0.9rem; opacity: 0.6; transition: opacity 0.2s ease; }
+  .lb-nav:hover { opacity: 1; color: #fff; }
+  .lb-nav[hidden] { display: none; }
+  .lb-prev { left: 0.4rem; }
+  .lb-next { right: 0.4rem; }
+  .lb-count { display: block; margin-top: 0.6rem; font-size: 0.72rem; letter-spacing: 0.1em;
+              color: #8f866f; font-family: var(--font-mono); }
 
-  @media (max-width: 34em) { .gallery-wide { width: 94vw; } .lb-dl { gap: 1rem; } }
+  @media (max-width: 34em) {
+    .gallery-wide { width: 94vw; }
+    .lb-dl { gap: 1rem; }
+    .lb-nav { font-size: 2.2rem; padding: 0.3rem 0.5rem; }
+  }
 </style>
 
 <script>
@@ -87,9 +103,23 @@ const count = gallery.sections.reduce((n, s) => n + s.items.length, 0);
     const img = document.getElementById('lb-img');
     const t = document.getElementById('lb-title');
     const a = document.getElementById('lb-after');
+    const count = document.getElementById('lb-count');
     const webp = document.getElementById('lb-webp');
     const png = document.getElementById('lb-png');
-    function open(btn) {
+    const prevBtn = document.getElementById('lb-prev');
+    const nextBtn = document.getElementById('lb-next');
+
+    // The set is the clicked tile's section (Loose Leaves or Mindscapes, in the
+    // visible language); prev/next wrap within it.
+    let group = [];
+    let idx = 0;
+    let lastFocus = null;
+
+    const preload = (src) => { if (src) { const i = new Image(); i.src = src; } };
+
+    function show(i) {
+      idx = (i + group.length) % group.length; // wrap
+      const btn = group[idx];
       img.src = btn.dataset.full;
       img.alt = btn.dataset.title;
       t.textContent = btn.dataset.title;
@@ -97,13 +127,52 @@ const count = gallery.sections.reduce((n, s) => n + s.items.length, 0);
       a.style.display = btn.dataset.after ? 'block' : 'none';
       webp.href = btn.dataset.full;
       png.href = btn.dataset.orig;
+      const solo = group.length < 2;
+      count.textContent = solo ? '' : (idx + 1) + ' / ' + group.length;
+      prevBtn.hidden = solo;
+      nextBtn.hidden = solo;
+      preload(group[(idx + 1) % group.length] && group[(idx + 1) % group.length].dataset.full);
+      preload(group[(idx - 1 + group.length) % group.length] && group[(idx - 1 + group.length) % group.length].dataset.full);
+    }
+    const next = () => show(idx + 1);
+    const prev = () => show(idx - 1);
+
+    function open(btn) {
+      const sec = btn.closest('.gsection');
+      group = sec ? Array.from(sec.querySelectorAll('.tile-btn')) : [btn];
+      lastFocus = document.activeElement;
+      show(group.indexOf(btn));
       lb.hidden = false;
       document.body.style.overflow = 'hidden';
+      lb.focus();
     }
-    function close() { lb.hidden = true; img.src = ''; document.body.style.overflow = ''; }
+    function close() {
+      lb.hidden = true;
+      img.src = '';
+      document.body.style.overflow = '';
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
     document.querySelectorAll('.tile-btn').forEach((b) => b.addEventListener('click', () => open(b)));
     document.getElementById('lb-close').addEventListener('click', close);
+    nextBtn.addEventListener('click', (e) => { e.stopPropagation(); next(); });
+    prevBtn.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
     lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !lb.hidden) close(); });
+    document.addEventListener('keydown', (e) => {
+      if (lb.hidden) return;
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowRight') next();
+      else if (e.key === 'ArrowLeft') prev();
+    });
+
+    // Basic swipe on touch.
+    let x0 = null;
+    lb.addEventListener('touchstart', (e) => { x0 = e.changedTouches[0].clientX; }, { passive: true });
+    lb.addEventListener('touchend', (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      x0 = null;
+      if (Math.abs(dx) > 40) (dx < 0 ? next : prev)();
+    }, { passive: true });
   })();
 </script>
