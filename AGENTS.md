@@ -24,6 +24,11 @@ his explicit approval, never on its own — and the push itself. Everything up t
 drafting, editing, building, restructuring, staging, previewing — the model does
 on its own initiative, without asking leave. Lead freely; stop at the gate.
 
+**John writes no code — a guardrail he keeps for himself.** He does not open an
+editor or type into a file. So never route a step through John editing something
+(pasting canon included) — every file change is the model's hand; John reads and
+approves. His approval *is* the whole of his hand here.
+
 ## Titling
 
 An answer is titled from what the reflection saw, never by restating the
@@ -72,6 +77,15 @@ Much of what a session will helpfully suggest building is already here.
 **Match before writing.** Read an existing file in the same collection before
 creating one. Conventions in this repo have moved and will move again; the
 schema comment is not the whole story.
+
+**Canon: fetched, verified, never from memory.** A quoted sutta is pulled from
+the SuttaCentral API — never recited from memory — and checked faithful against
+the source page before it goes in. A raw fetch can drop or garble a line across
+segment seams, so verification is required, not optional. Since John does not
+edit files (not even paste), the model inserts the canon; John reads it against
+the source and approves, and that reading is the fidelity gate — the same shape
+as his signature. Garbled-or-uncertain canon does not ship; the correct output
+is to hold and flag it.
 
 **Write `reviewed:` / `reviewer:` only to record John's explicit approval.** Those
 two lines are John's vouch; his approval *is* the signature, and the model only
