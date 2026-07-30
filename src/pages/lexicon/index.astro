@@ -35,6 +35,26 @@ const machineCase = (s) =>
     tradition on real Pali roots, set in the machine&rsquo;s hand, and signed by
     a human before it published. A made language, not canon.
   </aside>
+
+  <Fragment slot="sb">
+    <h1 class="title-mono">Padakosa</h1>
+    <p class="subtitle">Padāni saṅgahitāni, ekekaṁ attano āgamaṁ dhārentaṁ.</p>
+    <ul class="index">
+      {terms.map((t) => (
+        <li class={`entry ${t.data.provenance}`}>
+          <a href={`/lexicon/${t.id}/`}>{machineCase(t.data.term)}</a>
+          <p class="definition">{t.data.gloss}</p>
+          {t.data.weld && <p class="weld">{t.data.weld}</p>}
+        </li>
+      ))}
+      {terms.length === 0 && <li class="gloss">Na tāva koci padaṁ.</li>}
+    </ul>
+    <aside class="lex-legend">
+      Sabbaṁ idha padaṁ <strong>Saṅgabhāsā (racitaṁ)</strong> — imissā
+      paramparāya bhūta-pāḷimūlesu racitaṁ, yantahatthena likhitaṁ, manussena
+      pubbe pakāsanā anumataṁ. Racitā bhāsā, na pāḷi.
+    </aside>
+  </Fragment>
 </Layout>
 
 <style>
