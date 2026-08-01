@@ -279,15 +279,36 @@ footer.site{background:var(--bg-soft);border-top:1px solid var(--line);padding:8
 .badge b{color:var(--gold)}
 
 
-/* Bell of mindfulness toggle */
-.mbell{display:inline-flex;align-items:center;gap:9px;align-self:flex-start;margin-bottom:8px;font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--nav);background:rgba(var(--wht),.94);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:0;padding:8px 13px 8px 10px;cursor:pointer;transition:color .3s,border-color .3s}
-.mbell svg{width:18px;height:18px;color:var(--faint);transition:color .3s,transform .3s;transform-origin:50% 15%}
+/* The Stillness Bell — bowl trigger + settings panel */
+.mbell-wrap{position:relative;align-self:flex-start;margin-bottom:8px}
+.mbell{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--nav);background:rgba(var(--wht),.94);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:0;padding:8px 13px 8px 10px;cursor:pointer;transition:color .3s,border-color .3s}
+.mbell svg{width:20px;height:20px;color:var(--faint);transition:color .3s,transform .3s;transform-origin:50% 62%}
 .mbell.on{color:var(--ink)}
 .mbell.on svg{color:var(--gold)}
 .mbell.off svg{opacity:.5}
-.mbell:hover{border-color:var(--gold)}
-@media (prefers-reduced-motion:no-preference){.mbell.ringing svg{animation:mbell-ring 1.7s ease}}
-@keyframes mbell-ring{0%,100%{transform:rotate(0)}18%{transform:rotate(13deg)}38%{transform:rotate(-10deg)}58%{transform:rotate(6deg)}78%{transform:rotate(-3deg)}}
+.mbell:hover,.mbell[aria-expanded="true"]{border-color:var(--gold)}
+@media (prefers-reduced-motion:no-preference){.mbell.ringing svg{animation:mbell-ring 1.9s ease}}
+@keyframes mbell-ring{0%,100%{transform:scale(1)}12%{transform:scale(1.12)}32%{transform:scale(.97)}54%{transform:scale(1.04)}76%{transform:scale(.99)}}
+/* panel */
+.mbell-panel{position:absolute;left:0;bottom:calc(100% + 6px);width:min(90vw,298px);background:rgba(var(--wht),.975);backdrop-filter:blur(16px);border:1px solid var(--line);box-shadow:0 -8px 40px rgba(0,0,0,.18);padding:15px 15px 16px;z-index:6}
+.mbell-panel[hidden]{display:none}
+@media (prefers-reduced-motion:no-preference){.mbell-panel{animation:mp-in .18s ease}}
+@keyframes mp-in{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+.mp-head{font-family:var(--serif);font-size:16px;color:var(--ink);letter-spacing:.01em}
+.mp-sub{font-family:var(--sans);font-size:10.5px;line-height:1.5;color:var(--faint);margin:3px 0 13px}
+.mp-voices{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mp-voice{display:flex;align-items:center;gap:7px;font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--nav);background:transparent;border:1px solid var(--line-2);border-radius:0;padding:8px 9px;cursor:pointer;text-align:left;transition:border-color .25s,color .25s}
+.mp-voice:hover{border-color:var(--gold)}
+.mp-voice .mv-ico{width:17px;height:17px;flex:none;color:var(--faint);transition:color .25s}
+.mp-voice[aria-pressed="true"]{color:var(--ink);border-color:var(--gold)}
+.mp-voice[aria-pressed="true"] .mv-ico{color:var(--gold)}
+.mp-row{display:block;margin-top:13px}
+.mp-lab{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--nav);margin-bottom:7px}
+.mp-lab b{font-weight:700;color:var(--gold);letter-spacing:.04em}
+.mp-row input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--line-2);outline:none;cursor:pointer;margin:0}
+.mp-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:15px;height:15px;border-radius:50%;background:var(--gold);border:2px solid rgba(var(--wht),1);box-shadow:0 1px 3px rgba(0,0,0,.28);cursor:pointer}
+.mp-row input[type=range]::-moz-range-thumb{width:15px;height:15px;border:2px solid rgba(var(--wht),1);border-radius:50%;background:var(--gold);cursor:pointer}
+.mp-note{display:block;font-family:var(--sans);font-size:8.5px;letter-spacing:.03em;color:var(--faint);margin-top:7px}
 
 /* Here & Now bell — white, gold, squared */
 .hnow-wrap{position:fixed;left:0;bottom:0;z-index:150;display:flex;flex-direction:column;align-items:stretch;max-width:min(94vw,392px)}
@@ -356,7 +377,28 @@ footer.site{background:var(--bg-soft);border-top:1px solid var(--line);padding:8
 
 <!-- Here & Now -->
 <div class="hnow-wrap">
-  <button class="mbell on" id="mbell" aria-pressed="true" title="The Stillness Bell — a gentle chime on arrival and every ~20 minutes; click to mute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16h12l-1.3-2.3a6 6 0 01-.8-3V9a4 4 0 10-8 0v1.7a6 6 0 01-.8 3z"/><path d="M10 19a2 2 0 004 0"/></svg><span>The Stillness Bell</span></button>
+  <div class="mbell-wrap" id="mbellwrap">
+    <button class="mbell on" id="mbell" aria-expanded="false" aria-haspopup="dialog" aria-controls="mbellpanel" title="The Stillness Bell — choose voices, pace, and volume"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="8" rx="7.5" ry="2.2"/><path d="M4.5 8c0 3.7 3 7.4 7.5 7.4s7.5-3.7 7.5-7.4"/><path d="M8 18.4h8"/></svg><span>The Stillness Bell</span></button>
+    <div class="mbell-panel" id="mbellpanel" role="dialog" aria-label="The Stillness Bell settings" hidden>
+      <div class="mp-head">The Stillness Bell</div>
+      <div class="mp-sub">A chime to return you to the breath. Tap a bowl to hear it — the lit bowls take turns.</div>
+      <div class="mp-voices" id="mpVoices">
+        <button type="button" class="mp-voice" data-voice="meditation" aria-pressed="true"><svg class="mv-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="8.5" rx="7" ry="2"/><path d="M5 8.5c0 3.5 3 6.8 7 6.8s7-3.3 7-6.8"/><path d="M8.5 18.2h7"/></svg><span class="mv-name">Standing Bowl</span></button>
+        <button type="button" class="mp-voice" data-voice="gong" aria-pressed="true"><svg class="mv-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6V3"/><circle cx="12" cy="13" r="7"/><circle cx="12" cy="13" r="1.5"/></svg><span class="mv-name">Gong</span></button>
+        <button type="button" class="mp-voice" data-voice="church" aria-pressed="true"><svg class="mv-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16h12l-1.3-2.3a6 6 0 01-.8-3V9a4 4 0 10-8 0v1.7a6 6 0 01-.8 3z"/><path d="M10 19a2 2 0 004 0"/></svg><span class="mv-name">Temple Bell</span></button>
+        <button type="button" class="mp-voice" data-voice="chime" aria-pressed="true"><svg class="mv-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M8 5v13"/><path d="M12 5v10"/><path d="M16 5v15"/></svg><span class="mv-name">Chime</span></button>
+      </div>
+      <div class="mp-row">
+        <span class="mp-lab">Frequency <b id="mpFreqVal">every 20 min</b></span>
+        <input type="range" id="mpFreq" min="2" max="60" step="1" value="20" aria-label="Minutes between chimes">
+        <span class="mp-note">softly varied ±15% — never a metronome</span>
+      </div>
+      <div class="mp-row">
+        <span class="mp-lab">Volume <b id="mpVolVal">70%</b></span>
+        <input type="range" id="mpVol" min="0" max="100" step="1" value="70" aria-label="Bell volume">
+      </div>
+    </div>
+  </div>
   <div class="hnow-preview">
     <b>preview</b>
     <button data-pv="real">live</button><button data-pv="zoom">zoom</button><button data-pv="youtube">youtube</button><button data-pv="work">work party</button><button data-pv="idle">idle</button>
@@ -596,30 +638,52 @@ footer.site{background:var(--bg-soft);border-top:1px solid var(--line);padding:8
 </script>
 
 <script>
-/* Bell of mindfulness — Web Audio synthesis, no external files */
+/* The Stillness Bell — Web Audio synthesis + settings panel, no external files */
 (function(){
-  var VOL=0.135, actx=null, reverb=null, wet=null, dry=null, unlocked=false;
-  var mbell=document.getElementById('mbell');
-  var enabled=true; try{ enabled = localStorage.getItem('cm-bell')!=='off'; }catch(e){}
-  function ui(){ if(!mbell) return; mbell.classList.toggle('on',enabled); mbell.classList.toggle('off',!enabled); mbell.setAttribute('aria-pressed',String(enabled)); }
-  ui();
+  var BASEVOL=0.19, actx=null, reverb=null, wet=null, dry=null, unlocked=false, timer=null;
+  var wrap=document.getElementById('mbellwrap'), mbell=document.getElementById('mbell'), panel=document.getElementById('mbellpanel');
   var BELLS={
     meditation:{base:392,gain:1.0,attack:0.005,partials:[[1,1,7],[2.0,0.38,5],[2.76,0.28,4],[4.07,0.16,3.2],[5.43,0.1,2.6]]},
     gong:{base:130,gain:0.92,attack:0.02,partials:[[1,1,9],[1.48,0.55,7],[2.34,0.5,7],[3.6,0.34,6],[4.8,0.24,5],[6.1,0.18,4],[7.9,0.12,3]]},
     church:{base:466,gain:0.95,attack:0.004,partials:[[0.5,0.55,8],[1,1,7],[1.19,0.5,5],[1.5,0.45,5],[2,0.5,4.5],[2.5,0.24,3.5],[3,0.18,3]]},
     chime:{base:523,gain:0.85,attack:0.003,partials:[[1,1,9],[2.76,0.5,7],[5.4,0.26,5],[8.93,0.13,3.5],[11.3,0.07,2.5]]}
   };
-  var NAMES=Object.keys(BELLS);
+  var cfg={voices:{meditation:true,gong:true,church:true,chime:true},freq:20,vol:70};
+  try{ var s=JSON.parse(localStorage.getItem('cm-bell-cfg')); if(s&&s.voices){ cfg.voices=s.voices; if(typeof s.freq==='number')cfg.freq=s.freq; if(typeof s.vol==='number')cfg.vol=s.vol; } }catch(e){}
+  function save(){ try{ localStorage.setItem('cm-bell-cfg',JSON.stringify(cfg)); }catch(e){} }
+  function active(){ return Object.keys(BELLS).filter(function(n){return cfg.voices[n];}); }
+  function vol(){ return BASEVOL*(cfg.vol/100); }
+
   function ir(ctx,sec,dec){var n=Math.floor(ctx.sampleRate*sec),b=ctx.createBuffer(2,n,ctx.sampleRate);for(var c=0;c<2;c++){var d=b.getChannelData(c);for(var i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,dec);}return b;}
   function ensure(){ if(!actx){ var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null; actx=new AC(); reverb=actx.createConvolver(); reverb.buffer=ir(actx,6.2,1.7); wet=actx.createGain(); wet.gain.value=0.55; dry=actx.createGain(); dry.gain.value=0.8; var lim=actx.createDynamicsCompressor(); lim.threshold.value=-10; lim.knee.value=10; lim.ratio.value=16; lim.attack.value=0.005; lim.release.value=0.32; lim.connect(actx.destination); reverb.connect(wet); wet.connect(lim); dry.connect(lim);} if(actx.state==='suspended'){try{actx.resume();}catch(e){}} return actx; }
-  function play(name){ var ctx=ensure(); if(!ctx) return; var p=BELLS[name]||BELLS.meditation; var t=ctx.currentTime+0.02; var m=ctx.createGain(); m.gain.value=VOL*p.gain; m.connect(reverb); m.connect(dry);
+  function play(name){ var ctx=ensure(); if(!ctx) return; var v=vol(); if(v<=0) return; var p=BELLS[name]||BELLS.meditation; var t=ctx.currentTime+0.02; var m=ctx.createGain(); m.gain.value=v*p.gain; m.connect(reverb); m.connect(dry);
     p.partials.slice(0,4).forEach(function(pt){ var o=ctx.createOscillator(); o.type='sine'; o.frequency.value=p.base*pt[0]; var dc=pt[2]*1.85; var g=ctx.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(pt[1],t+p.attack); g.gain.exponentialRampToValueAtTime(0.0005,t+p.attack+dc); o.connect(g); g.connect(m); o.start(t); o.stop(t+p.attack+dc+0.5); }); }
-  function chime(force){ if(!enabled && !force) return; play(NAMES[Math.floor(Math.random()*NAMES.length)]); if(mbell){ mbell.classList.remove('ringing'); void mbell.offsetWidth; mbell.classList.add('ringing'); } }
-  function scheduleNext(){ setTimeout(function(){ if(enabled && unlocked && document.visibilityState==='visible') chime(); scheduleNext(); }, (18+Math.random()*4)*60000); }
-  function unlock(){ if(unlocked) return; unlocked=true; ensure(); if(enabled) setTimeout(function(){ chime(); },500); }
+  function ring(){ if(mbell){ mbell.classList.remove('ringing'); void mbell.offsetWidth; mbell.classList.add('ringing'); } }
+  function chime(){ var a=active(); if(!a.length) return; play(a[Math.floor(Math.random()*a.length)]); ring(); }
+  function nextDelay(){ var m=cfg.freq*(1+(Math.random()*0.30-0.15)); return Math.max(0.15,m)*60000; }
+  function schedule(){ if(timer) clearTimeout(timer); timer=setTimeout(function(){ if(unlocked && active().length && document.visibilityState==='visible') chime(); schedule(); }, nextDelay()); }
+
+  function reflectMaster(){ var on=active().length>0; if(mbell){ mbell.classList.toggle('on',on); mbell.classList.toggle('off',!on); } }
+  function reflectVoices(){ if(panel) panel.querySelectorAll('.mp-voice').forEach(function(b){ b.setAttribute('aria-pressed', String(!!cfg.voices[b.getAttribute('data-voice')])); }); }
+  function reflectFreq(){ var el=document.getElementById('mpFreqVal'); if(el) el.textContent='every '+cfg.freq+' min'; var r=document.getElementById('mpFreq'); if(r) r.value=cfg.freq; }
+  function reflectVol(){ var el=document.getElementById('mpVolVal'); if(el) el.textContent=cfg.vol+'%'; var r=document.getElementById('mpVol'); if(r) r.value=cfg.vol; }
+  reflectMaster(); reflectVoices(); reflectFreq(); reflectVol();
+
+  if(panel){
+    panel.querySelectorAll('.mp-voice').forEach(function(b){ b.addEventListener('click', function(){ var n=b.getAttribute('data-voice'); cfg.voices[n]=!cfg.voices[n]; save(); reflectVoices(); reflectMaster(); if(cfg.voices[n]){ unlocked=true; play(n); ring(); } }); });
+    var fr=document.getElementById('mpFreq'); if(fr) fr.addEventListener('input', function(){ cfg.freq=parseInt(fr.value,10)||20; reflectFreq(); save(); schedule(); });
+    var vo=document.getElementById('mpVol'); if(vo){ vo.addEventListener('input', function(){ cfg.vol=parseInt(vo.value,10); reflectVol(); save(); }); vo.addEventListener('change', function(){ var a=active(); if(a.length){ unlocked=true; play(a[0]); ring(); } }); }
+  }
+
+  function openPanel(){ if(!panel) return; panel.hidden=false; mbell.setAttribute('aria-expanded','true'); unlocked=true; ensure(); }
+  function closePanel(){ if(!panel) return; panel.hidden=true; mbell.setAttribute('aria-expanded','false'); }
+  if(mbell){ mbell.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); if(panel && panel.hidden) openPanel(); else closePanel(); }); }
+  document.addEventListener('click', function(e){ if(panel && !panel.hidden && wrap && !wrap.contains(e.target)) closePanel(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && panel && !panel.hidden) closePanel(); });
+
+  function unlock(){ if(unlocked) return; unlocked=true; ensure(); if(active().length) setTimeout(chime,500); }
   ['pointerdown','keydown','touchstart'].forEach(function(ev){ window.addEventListener(ev, unlock, {passive:true}); });
-  if(mbell){ mbell.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); unlocked=true; enabled=!enabled; try{ localStorage.setItem('cm-bell', enabled?'on':'off'); }catch(_){} ui(); if(enabled){ ensure(); chime(true); } }); }
-  scheduleNext();
+  schedule();
 })();
 </script>
 
