@@ -669,7 +669,7 @@ footer.site{background:var(--bg-soft);border-top:1px solid var(--line);padding:8
 <script>
 /* The Stillness Bell — Web Audio synthesis + settings panel, no external files */
 (function(){
-  var BASEVOL=0.16, actx=null, reverb=null, wet=null, dry=null, unlocked=false, timer=null;
+  var BASEVOL=0.16, actx=null, reverb=null, wet=null, dry=null, master=null, unlocked=false, timer=null;
   var wrap=document.getElementById('mbellwrap'), mbell=document.getElementById('mbell'), panel=document.getElementById('mbellpanel');
   var hallOn=false, hallTimer=null, cdTimer=null, hall=null;
   var BELLS={
@@ -677,7 +677,7 @@ footer.site{background:var(--bg-soft);border-top:1px solid var(--line);padding:8
     gong:{base:130,gain:0.92,attack:0.02,partials:[[1,1,9],[1.48,0.55,7],[2.34,0.5,7],[3.6,0.34,6],[4.8,0.24,5],[6.1,0.18,4],[7.9,0.12,3]]},
     church:{base:466,gain:0.95,attack:0.004,partials:[[0.5,0.55,8],[1,1,7],[1.19,0.5,5],[1.5,0.45,5],[2,0.5,4.5],[2.5,0.24,3.5],[3,0.18,3]]},
     chime:{base:523,gain:0.85,attack:0.003,partials:[[1,1,9],[2.76,0.5,7],[5.4,0.26,5],[8.93,0.13,3.5],[11.3,0.07,2.5]]},
-    crystal:{base:594,gain:0.9,attack:0.004,partials:[[1,1,10],[2.01,0.4,9],[3.0,0.17,8],[4.2,0.08,6.5]]},
+    crystal:{base:568,gain:0.85,attack:0.05,partials:[[1,1,10],[1.004,0.82,10],[2.76,0.12,8],[5.4,0.05,6]]},
     tingsha:{base:1180,gain:0.6,attack:0.002,partials:[[1,1,6],[1.34,0.68,6],[1.72,0.46,5],[2.15,0.26,4.2]]},
     deepgong:{base:92,gain:0.95,attack:0.03,partials:[[1,1,12],[1.5,0.6,10],[2.1,0.5,9],[2.9,0.32,8],[3.9,0.2,7]]},
     woodblock:{base:840,gain:0.8,attack:0.001,partials:[[1,1,0.14],[2.9,0.5,0.1],[5.1,0.22,0.08]]}
@@ -689,11 +689,9 @@ footer.site{background:var(--bg-soft);border-top:1px solid var(--line);padding:8
   cfg.secs=Math.min(1800,Math.max(1,cfg.secs));
   function save(){ try{ localStorage.setItem('cm-bell-cfg',JSON.stringify(cfg)); }catch(e){} }
   function active(){ return VNAMES.filter(function(n){return cfg.voices[n];}); }
-  function vol(){ return BASEVOL*(cfg.vol/100); }
-
   function ir(ctx,sec,dec){var n=Math.floor(ctx.sampleRate*sec),b=ctx.createBuffer(2,n,ctx.sampleRate);for(var c=0;c<2;c++){var d=b.getChannelData(c);for(var i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,dec);}return b;}
-  function ensure(){ if(!actx){ var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null; actx=new AC(); reverb=actx.createConvolver(); reverb.buffer=ir(actx,8.5,1.5); wet=actx.createGain(); wet.gain.value=0.62; dry=actx.createGain(); dry.gain.value=0.8; var lim=actx.createDynamicsCompressor(); lim.threshold.value=-12; lim.knee.value=12; lim.ratio.value=14; lim.attack.value=0.004; lim.release.value=0.4; lim.connect(actx.destination); reverb.connect(wet); wet.connect(lim); dry.connect(lim);} if(actx.state==='suspended'){try{actx.resume();}catch(e){}} return actx; }
-  function play(name){ var ctx=ensure(); if(!ctx) return; var v=vol(); if(v<=0) return; var p=BELLS[name]||BELLS.meditation; var t=ctx.currentTime+0.02; var m=ctx.createGain(); m.gain.value=v*p.gain; m.connect(reverb); m.connect(dry);
+  function ensure(){ if(!actx){ var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null; actx=new AC(); reverb=actx.createConvolver(); reverb.buffer=ir(actx,8.5,1.5); wet=actx.createGain(); wet.gain.value=0.62; dry=actx.createGain(); dry.gain.value=0.8; master=actx.createGain(); master.gain.value=cfg.vol/100; var lim=actx.createDynamicsCompressor(); lim.threshold.value=-12; lim.knee.value=12; lim.ratio.value=14; lim.attack.value=0.004; lim.release.value=0.4; lim.connect(actx.destination); reverb.connect(wet); wet.connect(master); dry.connect(master); master.connect(lim);} if(actx.state==='suspended'){try{actx.resume();}catch(e){}} return actx; }
+  function play(name){ var ctx=ensure(); if(!ctx) return; if(cfg.vol<=0) return; var p=BELLS[name]||BELLS.meditation; var t=ctx.currentTime+0.02+(name==='woodblock'?Math.random()*0.45:0); var m=ctx.createGain(); m.gain.value=BASEVOL*p.gain; m.connect(reverb); m.connect(dry);
     p.partials.slice(0,4).forEach(function(pt){ var o=ctx.createOscillator(); o.type='sine'; o.frequency.value=p.base*pt[0]; var dc=pt[2]*2.4; var g=ctx.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(pt[1],t+p.attack); g.gain.exponentialRampToValueAtTime(0.0005,t+p.attack+dc); o.connect(g); g.connect(m); o.start(t); o.stop(t+p.attack+dc+0.8); }); }
   function ring(){ if(mbell){ mbell.classList.remove('ringing'); void mbell.offsetWidth; mbell.classList.add('ringing'); } if(hallOn && hall){ hall.classList.remove('struck'); void hall.offsetWidth; hall.classList.add('struck'); } }
   function chime(){ var a=active(); if(!a.length) return; play(a[Math.floor(Math.random()*a.length)]); ring(); }
@@ -732,7 +730,7 @@ footer.site{background:var(--bg-soft);border-top:1px solid var(--line);padding:8
   if(panel){
     panel.querySelectorAll('.mp-voice').forEach(function(b){ b.addEventListener('click', function(){ var n=b.getAttribute('data-voice'); cfg.voices[n]=!cfg.voices[n]; save(); reflectVoices(); reflectMaster(); if(cfg.voices[n]){ unlocked=true; play(n); ring(); } }); });
     var fr=document.getElementById('mpFreq'); if(fr) fr.addEventListener('input', function(){ cfg.secs=parseInt(fr.value,10)||1200; reflectFreq(); save(); schedule(); if(hallOn) hallSchedule(); });
-    var vo=document.getElementById('mpVol'); if(vo){ vo.addEventListener('input', function(){ cfg.vol=parseInt(vo.value,10); reflectVol(); save(); }); vo.addEventListener('change', function(){ var a=active(); if(a.length){ unlocked=true; play(a[0]); ring(); } }); }
+    var vo=document.getElementById('mpVol'); if(vo){ vo.addEventListener('input', function(){ cfg.vol=parseInt(vo.value,10)||0; reflectVol(); if(master&&actx){ master.gain.setTargetAtTime(cfg.vol/100, actx.currentTime, 0.03); } save(); }); vo.addEventListener('change', function(){ var a=active(); if(a.length){ unlocked=true; play(a[0]); ring(); } }); }
     var sit=document.getElementById('mpSit'); if(sit) sit.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); closePanel(); hallEnter(); });
   }
 
