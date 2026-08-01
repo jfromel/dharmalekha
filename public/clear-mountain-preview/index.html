@@ -51,7 +51,7 @@ img{max-width:100%}
 .eyebrow{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:0}
 
 /* header — white, gold logo, grey Lato nav */
-header.site{position:fixed;top:0;left:0;right:0;z-index:100;transition:background .5s ease,border-color .5s,box-shadow .5s;border-bottom:1px solid transparent}
+header.site{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(var(--wht),.93);backdrop-filter:blur(14px) saturate(1.05);transition:background .5s ease,border-color .5s,box-shadow .5s;border-bottom:1px solid var(--line)}
 body.scrolled header.site{background:rgba(var(--wht),.9);backdrop-filter:blur(14px) saturate(1.05);border-bottom-color:var(--line);box-shadow:0 8px 30px rgba(40,40,32,.05)}
 .nav{display:flex;align-items:center;height:122px;gap:34px;transition:height .4s ease}
 body.scrolled .nav{height:92px}
@@ -81,6 +81,7 @@ body.scrolled .brand-logo{height:80px}
 /* hero — pale, ethereal, Cinzel wordmark */
 .hero{position:relative;min-height:94svh;display:flex;align-items:flex-end;overflow:hidden}
 .hero-media{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center 42%;filter:saturate(1.05) contrast(1.03)}
+#heroMedia.ph{background-position:center 15%}
 .hero-scrim{position:absolute;inset:0;z-index:1;background:
   linear-gradient(180deg, rgba(var(--wht),.62) 0%, rgba(var(--wht),.16) 15%, rgba(var(--wht),0) 32%, rgba(var(--wht),0) 50%, rgba(var(--wht),.34) 66%, rgba(var(--wht),.85) 85%, rgba(var(--wht),.98) 100%)}
 .hero-inner{position:absolute;left:0;right:0;bottom:0;z-index:2;width:100%;max-width:1140px;margin:0 auto;padding:0 36px 58px;text-align:center}
@@ -312,10 +313,8 @@ footer.site{background:var(--bg-soft);border-top:1px solid var(--line);padding:8
 .mbell-panel{max-height:min(80vh,600px);overflow-y:auto}
 .mp-sit{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:15px;font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bg);background:var(--gold);border:1px solid var(--gold);border-radius:0;padding:11px;cursor:pointer;transition:opacity .25s}
 .mp-sit:hover{opacity:.85}
-/* face-centered hero can't host inline nav without covering the ajahns' faces →
-   logo far-left + hamburger far-right at every width; full menu lives in the panel */
-.menu-left,.menu-right{display:none}
-.hamb{display:flex}
+/* inline menu stays in the top bar; hamburger only on narrow screens */
+@media (max-width:900px){.menu-left,.menu-right{display:none}.hamb{display:flex}}
 /* Sit with the bell — shared practice space */
 .hall{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 42%,#1b1b18 0%,#0d0d0c 68%,#050504 100%);color:#eae4d6}
 .hall[hidden]{display:none}
