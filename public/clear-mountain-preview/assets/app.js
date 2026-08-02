@@ -41,8 +41,8 @@ try{
     {days:[0],s:17*60,e:18*60,title:"Mission Majjhima! — Sutta Study",kind:"youtube"}
   ];
   var LINKS={
-    zoom:{url:"https://us02web.zoom.us/j/RECURRING-ID",verb:"Join on Zoom"},
-    hybrid:{url:"https://us02web.zoom.us/j/RECURRING-ID",verb:"Join online"},
+    zoom:{url:"https://us02web.zoom.us/j/89116979257?pwd=kS9HRf_XooHZbBN3dEm0Lc7I3zboWA.1",verb:"Join on Zoom"},
+    hybrid:{url:"https://us02web.zoom.us/j/89116979257?pwd=kS9HRf_XooHZbBN3dEm0Lc7I3zboWA.1",verb:"Join online"},
     youtube:{url:"https://www.youtube.com/c/ClearMountainMonastery/live",verb:"Watch live on YouTube"},
     inperson:{url:"https://maps.google.com/?q=15901+Cedar+Falls+Road+SE,+North+Bend,+WA+98045",verb:"Get directions"}
   };
@@ -232,5 +232,47 @@ try{
   function closeModal(){player.innerHTML=''; modal.hidden=true; document.body.style.overflow='';}
   if(modal){modal.querySelector('.vmodal-bg').addEventListener('click',closeModal); modal.querySelector('.vmodal-x').addEventListener('click',closeModal); document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!modal.hidden)closeModal();});}
   render();
+})();
+}catch(_e){if(window.console)console.warn("cm:",_e);}
+try{
+/* Demo CMS — staff login + inline content editing (client-side, localStorage) */
+(function(){
+  var KEY='cmcms:'+location.pathname;
+  function targets(){
+    var sel='main h1, main h2, main .lead, main .pull, main .phero-sub, main figcaption, main .sub-sec p, main .mp-sub';
+    return [].slice.call(document.querySelectorAll(sel)).filter(function(el){ return !el.closest('a') && !el.closest('.mbell-panel'); });
+  }
+  function load(){ try{ var m=JSON.parse(localStorage.getItem(KEY)||'{}'); targets().forEach(function(el,i){ if(m[i]!=null) el.innerHTML=m[i]; }); }catch(e){} }
+  function save(){ try{ var m={}; targets().forEach(function(el,i){ m[i]=el.innerHTML; }); localStorage.setItem(KEY,JSON.stringify(m)); }catch(e){} }
+  load();
+
+  var modal,bar,editing=false;
+  function openLogin(){ modal.hidden=false; setTimeout(function(){ var p=modal.querySelector('.cms-pass'); if(p)p.focus(); },30); }
+  function closeLogin(){ modal.hidden=true; }
+  function enterEdit(){ editing=true; document.body.classList.add('cms-editing'); bar.hidden=false;
+    targets().forEach(function(el){ el.setAttribute('contenteditable','true'); el.addEventListener('input',save); }); }
+  function exitEdit(){ editing=false; document.body.classList.remove('cms-editing'); bar.hidden=true;
+    targets().forEach(function(el){ el.removeAttribute('contenteditable'); }); save(); }
+
+  var foot=document.querySelector('footer.site .wrap')||document.querySelector('footer.site');
+  if(foot){ var b=document.createElement('button'); b.type='button'; b.className='cms-login'; b.textContent='✎ Staff — edit this site'; b.addEventListener('click',openLogin); foot.appendChild(b); }
+
+  modal=document.createElement('div'); modal.className='cms-modal'; modal.hidden=true;
+  modal.innerHTML='<div class="cms-bg" data-x></div><div class="cms-box"><h3>Staff sign in</h3>'
+    +'<p class="cms-note">Demo of how the monastery edits its own site — no developer needed. Any password works here; changes save in your browser.</p>'
+    +'<input type="password" class="cms-pass" placeholder="Password" aria-label="Password">'
+    +'<div class="cms-actions"><button class="cms-cancel" data-x>Cancel</button><button class="cms-go">Sign in</button></div></div>';
+  document.body.appendChild(modal);
+  modal.addEventListener('click',function(e){ if(e.target.hasAttribute('data-x')) closeLogin(); });
+  modal.querySelector('.cms-go').addEventListener('click',function(){ closeLogin(); enterEdit(); });
+  modal.querySelector('.cms-pass').addEventListener('keydown',function(e){ if(e.key==='Enter'){ closeLogin(); enterEdit(); } });
+
+  bar=document.createElement('div'); bar.className='cms-bar'; bar.hidden=true;
+  bar.innerHTML='<span>✎ Editing — click any heading or paragraph to rewrite it. <b>Changes save in your browser (demo).</b></span>'
+    +'<span class="cms-baractions"><button class="cms-reset">Reset</button><button class="cms-done">Done</button></span>';
+  document.body.appendChild(bar);
+  bar.querySelector('.cms-done').addEventListener('click',exitEdit);
+  bar.querySelector('.cms-reset').addEventListener('click',function(){ try{ localStorage.removeItem(KEY); }catch(e){} location.reload(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ if(!modal.hidden) closeLogin(); else if(editing) exitEdit(); } });
 })();
 }catch(_e){if(window.console)console.warn("cm:",_e);}
