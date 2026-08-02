@@ -75,12 +75,13 @@ body.scrolled .brand-logo{height:40px}
 #heroMedia.ph{background-position:center 15%}
 .hero-scrim{position:absolute;inset:0;z-index:1;background:
   linear-gradient(180deg, rgba(var(--wht),.62) 0%, rgba(var(--wht),.16) 15%, rgba(var(--wht),0) 32%, rgba(var(--wht),0) 50%, rgba(var(--wht),.34) 66%, rgba(var(--wht),.85) 85%, rgba(var(--wht),.98) 100%)}
-.hero-inner{position:absolute;left:0;right:0;bottom:0;z-index:2;width:100%;max-width:1140px;margin:0 auto;padding:0 36px 58px;text-align:center}
+.hero-inner{position:absolute;left:0;right:0;bottom:0;z-index:3;width:100%;max-width:none;margin:0;padding:0 0 196px 14px;text-align:left}
 .hero .eyebrow{display:none}
 .hero .eyebrow::after{content:"";display:block;width:44px;height:1px;background:var(--gold);opacity:.6;margin:16px auto 0}
 .hero h1{font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:clamp(38px,6.4vw,88px);line-height:1.08;letter-spacing:.1em;color:#3a3a38;margin:0}
 .hero .tag{display:none}
-.hero-cta{display:flex;flex-wrap:wrap;gap:16px;margin-top:26px;justify-content:center}
+.hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;justify-content:flex-start}
+.hero .btn{font-size:10px;letter-spacing:.1em;padding:7px 12px}
 .hero .btn.ghost{background:rgba(var(--wht),.66);backdrop-filter:blur(4px)}
 .hero .btn.ghost:hover{background:rgba(var(--wht),.8)}
 .scrollcue{display:none}
