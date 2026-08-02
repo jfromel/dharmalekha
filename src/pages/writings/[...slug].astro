@@ -11,6 +11,16 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const d = entry.data;
+
+// The machine wears a name — Dāruyanta, the Puppet — and the name is a costume
+// over the condition, not a claim. Surface the costume in the byline and keep
+// the condition (the exact model id, from the untouched `models:` field) visible
+// beneath it. The Claude costume is Dāruyanta; any other model is shown raw
+// until it, too, has an honest name to wear.
+const puppetName = (m: string) =>
+  m.startsWith('claude') ? 'Dāruyanta the Puppet' : m;
+const modelIds = d.models.join(', ');
+const bylineNames = [...new Set(d.models.map(puppetName))].join(', ');
 ---
 
 <Layout title={d.title} subtitle={d.subtitle}>
@@ -24,7 +34,7 @@ const d = entry.data;
 
   {d.models.length > 0 && (
     <aside class="notice">
-      Machine-assisted: {d.models.join(', ')}.
+      Machine-assisted — {bylineNames}{bylineNames !== modelIds && <> ({modelIds})</>}.
       {d.reviewer && d.reviewed && (
         <> Read against its sources by {d.reviewer} on {d.reviewed.toISOString().slice(0, 10)}.</>
       )}
