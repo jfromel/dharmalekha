@@ -163,7 +163,7 @@ try{
     if(sort==="old"){ list=list.slice().reverse(); }
     var total=list.length, view=list.slice(0,shown), out="";
     for(var i=0;i<view.length;i++){ var v=view[i], id=v.i;
-      out+='<a class="vitem" href="https://www.youtube.com/watch?v='+id+'" target="_blank" rel="noopener">'
+      out+='<a class="vitem" data-yt="'+id+'" href="https://www.youtube.com/watch?v='+id+'" target="_blank" rel="noopener">'
         +'<span class="vthumb"><img class="vthumb-img" src="https://i.ytimg.com/vi/'+id+'/mqdefault.jpg" loading="lazy" decoding="async" alt=""><span class="vplay"></span>'+(v.d?'<span class="vdur">'+esc(v.d)+'</span>':'')+'</span>'
         +'<span class="vseries">'+esc(v.s)+'</span><span class="vtitle">'+esc(v.t)+'</span><span class="vmeta">'+esc(v.g||"Clear Mountain")+'</span></a>';
     }
@@ -182,6 +182,11 @@ try{
   if(qEl) qEl.addEventListener("input",function(){ q=qEl.value.trim().toLowerCase(); reset(); });
   if(sortEl) sortEl.addEventListener("change",function(){ sort=sortEl.value; reset(); });
   if(moreEl) moreEl.addEventListener("click",function(){ shown+=PAGE; render(); });
+  var vmodal=document.getElementById("vmodal"), vmP=document.getElementById("vmPlayer"), vmT=document.getElementById("vmTitle"), vmY=document.getElementById("vmYt");
+  function openV(id,title,url){ if(!vmodal) return; vmP.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>'; if(vmT)vmT.textContent=title||""; if(vmY)vmY.href=url||"#"; vmodal.hidden=false; document.body.style.overflow="hidden"; }
+  function closeV(){ if(!vmodal) return; vmodal.hidden=true; vmP.innerHTML=""; document.body.style.overflow=""; }
+  grid.addEventListener("click",function(e){ var a=e.target.closest?e.target.closest(".vitem"):null; if(!a) return; if(e.metaKey||e.ctrlKey||e.shiftKey) return; e.preventDefault(); openV(a.getAttribute("data-yt"),(a.querySelector(".vtitle")||{}).textContent,a.getAttribute("href")); });
+  if(vmodal){ vmodal.addEventListener("click",function(e){ if(e.target.hasAttribute("data-close")) closeV(); }); document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&!vmodal.hidden) closeV(); }); }
   reset();
 })();
 }catch(_e){if(window.console)console.warn("cm:",_e);}
