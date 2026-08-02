@@ -313,8 +313,15 @@ footer.site{background:var(--bg-soft);border-top:1px solid var(--line);padding:8
 .mbell-panel{max-height:min(80vh,600px);overflow-y:auto}
 .mp-sit{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:15px;font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bg);background:var(--gold);border:1px solid var(--gold);border-radius:0;padding:11px;cursor:pointer;transition:opacity .25s}
 .mp-sit:hover{opacity:.85}
-/* inline menu stays in the top bar; hamburger only on narrow screens */
-@media (max-width:900px){.menu-left,.menu-right{display:none}.hamb{display:flex}}
+/* menu is always inline clicks in the banner — no dropdown; wraps under the logo when narrow */
+@media (max-width:900px){
+  .nav{flex-wrap:wrap;height:auto;row-gap:4px;padding-top:12px;padding-bottom:12px;justify-content:center}
+  body.scrolled .nav{height:auto}
+  .brand{margin-right:0;width:100%;justify-content:center}
+  .menu-left,.menu-right{justify-content:center;flex-wrap:wrap}
+  .menu{gap:18px}
+  .menu a{font-size:11px;letter-spacing:.09em}
+}
 /* Sit with the bell — shared practice space */
 .hall{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 42%,#1b1b18 0%,#0d0d0c 68%,#050504 100%);color:#eae4d6}
 .hall[hidden]{display:none}
@@ -377,9 +384,10 @@ footer.site{background:var(--bg-soft);border-top:1px solid var(--line);padding:8
   .ways .go{margin-top:8px}
 }
 @media (max-width:640px){
-  .menu-left,.menu-right,.actions{display:none}
-  .hamb{display:flex;justify-self:start}
-  .nav{height:88px}
+  .actions{display:none}
+  .menu{gap:12px}
+  .menu a{font-size:10px;letter-spacing:.06em}
+  .nav{padding-top:10px;padding-bottom:10px}
   .brand-logo{height:64px}
   .vsmall{grid-template-columns:1fr}
   .foot-top{grid-template-columns:1fr}
