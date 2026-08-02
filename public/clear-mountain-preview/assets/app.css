@@ -80,10 +80,10 @@ body.scrolled .brand-logo{height:40px}
 .hero .eyebrow::after{content:"";display:block;width:44px;height:1px;background:var(--gold);opacity:.6;margin:16px auto 0}
 .hero h1{font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:clamp(38px,6.4vw,88px);line-height:1.08;letter-spacing:.1em;color:#3a3a38;margin:0}
 .hero .tag{display:none}
-.hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;justify-content:flex-start}
-.hero .btn{font-size:10px;letter-spacing:.1em;padding:7px 12px}
-.hero .btn.ghost{background:rgba(var(--wht),.66);backdrop-filter:blur(4px)}
-.hero .btn.ghost:hover{background:rgba(var(--wht),.8)}
+.hero-cta{position:fixed;bottom:46px;right:128px;z-index:150;display:flex;gap:0;margin:0;background:rgba(var(--wht),.93);backdrop-filter:blur(10px);border:1px solid var(--line)}
+.hero .btn{font-size:10px;font-weight:700;line-height:1.4;letter-spacing:.1em;text-transform:uppercase;padding:7px 12px;border:0;background:transparent;color:var(--nav);backdrop-filter:none}
+.hero .btn+.btn{border-left:1px solid var(--line)}
+.hero .btn:hover{color:var(--gold);background:transparent}
 .scrollcue{display:none}
 .scrollcue span{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase}
 .scrollcue i{width:1px;height:50px;background:linear-gradient(var(--gold-2),transparent);display:block}
@@ -272,7 +272,7 @@ footer.site{background:var(--bg-soft);border-top:1px solid var(--line);padding:8
 .badge b{color:var(--gold)}
 
 
-/* The Stillness Bell — bowl trigger + settings panel */
+/* Stillness Bells — bowl trigger + settings panel */
 .mbell-wrap{position:relative;align-self:flex-start;margin-bottom:8px}
 .mbell{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--nav);background:rgba(var(--wht),.94);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:0;padding:8px 13px 8px 10px;cursor:pointer;transition:color .3s,border-color .3s}
 .mbell svg{width:20px;height:20px;color:var(--faint);transition:color .3s,transform .3s;transform-origin:50% 62%}

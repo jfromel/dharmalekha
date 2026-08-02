@@ -59,7 +59,7 @@ try{
 })();
 }catch(_e){if(window.console)console.warn("cm:",_e);}
 try{
-/* The Stillness Bell — Web Audio synthesis + settings panel, no external files */
+/* Stillness Bells — Web Audio synthesis + settings panel, no external files */
 (function(){
   var BASEVOL=0.16, actx=null, reverb=null, wet=null, dry=null, master=null, unlocked=false, timer=null;
   var wrap=document.getElementById('mbellwrap'), mbell=document.getElementById('mbell'), panel=document.getElementById('mbellpanel');
