@@ -53,11 +53,11 @@ img{max-width:100%}
 /* header — white, gold logo, grey Lato nav */
 header.site{position:fixed;top:0;left:0;right:0;z-index:100;transition:background .5s ease,border-color .5s,box-shadow .5s;border-bottom:1px solid transparent}
 body.scrolled header.site{background:rgba(var(--wht),.9);backdrop-filter:blur(14px) saturate(1.05);border-bottom-color:var(--line);box-shadow:0 8px 30px rgba(40,40,32,.05)}
-.nav{display:flex;align-items:center;height:122px;gap:34px;transition:height .4s ease}
-body.scrolled .nav{height:92px}
+.nav{display:flex;align-items:center;height:70px;gap:30px;transition:height .4s ease}
+body.scrolled .nav{height:58px}
 .brand{display:flex;align-items:center;order:-1;margin-right:auto}
-.brand-logo{height:112px;width:auto;display:block;transition:height .4s ease,filter .4s ease}
-body.scrolled .brand-logo{height:80px}
+.brand-logo{height:52px;width:auto;display:block;transition:height .4s ease,filter .4s ease}
+body.scrolled .brand-logo{height:40px}
 .menu{display:flex;gap:30px;align-items:center}
 .menu-left{justify-content:flex-start}
 .menu-right{justify-content:flex-end}
@@ -315,12 +315,12 @@ footer.site{background:var(--bg-soft);border-top:1px solid var(--line);padding:8
 .mp-sit:hover{opacity:.85}
 /* menu is always inline clicks in the banner — no dropdown; wraps under the logo when narrow */
 @media (max-width:900px){
-  .nav{flex-wrap:wrap;height:auto;row-gap:4px;padding-top:12px;padding-bottom:12px;justify-content:center}
+  .nav{flex-wrap:wrap;height:auto;row-gap:2px;padding-top:8px;padding-bottom:8px}
   body.scrolled .nav{height:auto}
-  .brand{margin-right:0;width:100%;justify-content:center}
-  .menu-left,.menu-right{justify-content:center;flex-wrap:wrap}
-  .menu{gap:18px}
-  .menu a{font-size:11px;letter-spacing:.09em}
+  .brand{margin-right:16px}
+  .menu-left,.menu-right{flex-wrap:wrap}
+  .menu{gap:14px}
+  .menu a{font-size:10px;letter-spacing:.07em;padding:3px 0}
 }
 /* Sit with the bell — shared practice space */
 .hall{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 42%,#1b1b18 0%,#0d0d0c 68%,#050504 100%);color:#eae4d6}
