@@ -418,7 +418,7 @@ footer.site{background:var(--bg-soft);border-top:1px solid var(--line);padding:8
       </div>
       <div class="mp-row">
         <span class="mp-lab">Frequency <b id="mpFreqVal">every 20 min</b></span>
-        <input type="range" id="mpFreq" min="1" max="1800" step="1" value="1200" aria-label="Seconds between chimes">
+        <input type="range" id="mpFreq" min="0" max="1000" step="1" value="946" aria-label="Chime interval (logarithmic — quick end has finer control)">
         <span class="mp-note">softly scattered — never a metronome</span>
       </div>
       <div class="mp-row">
@@ -723,13 +723,15 @@ footer.site{background:var(--bg-soft);border-top:1px solid var(--line);padding:8
   function reflectMaster(){ var on=active().length>0; if(mbell){ mbell.classList.toggle('on',on); mbell.classList.toggle('off',!on); } }
   function reflectVoices(){ if(panel) panel.querySelectorAll('.mp-voice').forEach(function(b){ b.setAttribute('aria-pressed', String(!!cfg.voices[b.getAttribute('data-voice')])); }); }
   function fmtEvery(sec){ if(sec<60) return 'every '+sec+' sec'; if(sec%60===0) return 'every '+(sec/60)+' min'; return 'every '+Math.floor(sec/60)+' min '+(sec%60)+' sec'; }
-  function reflectFreq(){ var el=document.getElementById('mpFreqVal'); if(el) el.textContent=fmtEvery(cfg.secs); var r=document.getElementById('mpFreq'); if(r) r.value=cfg.secs; }
+  function pos2secs(pos){ return Math.min(1800,Math.max(1,Math.round(Math.pow(1800,pos/1000)))); }
+  function secs2pos(sec){ return Math.round(1000*Math.log(sec)/Math.log(1800)); }
+  function reflectFreq(){ var el=document.getElementById('mpFreqVal'); if(el) el.textContent=fmtEvery(cfg.secs); var r=document.getElementById('mpFreq'); if(r) r.value=secs2pos(cfg.secs); }
   function reflectVol(){ var el=document.getElementById('mpVolVal'); if(el) el.textContent=cfg.vol+'%'; var r=document.getElementById('mpVol'); if(r) r.value=cfg.vol; }
   reflectMaster(); reflectVoices(); reflectFreq(); reflectVol();
 
   if(panel){
     panel.querySelectorAll('.mp-voice').forEach(function(b){ b.addEventListener('click', function(){ var n=b.getAttribute('data-voice'); cfg.voices[n]=!cfg.voices[n]; save(); reflectVoices(); reflectMaster(); if(cfg.voices[n]){ unlocked=true; play(n); ring(); } }); });
-    var fr=document.getElementById('mpFreq'); if(fr) fr.addEventListener('input', function(){ cfg.secs=parseInt(fr.value,10)||1200; reflectFreq(); save(); schedule(); if(hallOn) hallSchedule(); });
+    var fr=document.getElementById('mpFreq'); if(fr) fr.addEventListener('input', function(){ cfg.secs=pos2secs(parseInt(fr.value,10)||0); var el=document.getElementById('mpFreqVal'); if(el) el.textContent=fmtEvery(cfg.secs); save(); schedule(); if(hallOn) hallSchedule(); });
     var vo=document.getElementById('mpVol'); if(vo){ vo.addEventListener('input', function(){ cfg.vol=parseInt(vo.value,10)||0; reflectVol(); if(master&&actx){ master.gain.setTargetAtTime(cfg.vol/100, actx.currentTime, 0.03); } save(); }); vo.addEventListener('change', function(){ var a=active(); if(a.length){ unlocked=true; play(a[0]); ring(); } }); }
     var sit=document.getElementById('mpSit'); if(sit) sit.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); closePanel(); hallEnter(); });
   }
